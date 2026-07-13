@@ -33,6 +33,21 @@ fix(react): fix email field validation
 chore: update dependencies
 ```
 
+## Branch naming conventions
+
+Branches must follow this naming pattern so that Jira's automation rules (e.g. linking the branch to its issue, transitioning the issue status) are triggered correctly:
+
+```
+<type>/SCRUM-<id>/SCRUM-<id>-short-description
+```
+
+Examples:
+
+```
+feature/SCRUM-51/SCRUM-58-configurar-rutas
+feature/SCRUM-57/SCRUM-57-setup-react-project
+```
+
 ## License
 
 ISC
