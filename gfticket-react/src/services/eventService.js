@@ -1,5 +1,7 @@
 const URL = 'http://teacherbanking.us-east-1.elasticbeanstalk.com/eventos';
 
+/*
+Added in previous commit by mistake
 export const getEventos = async () =>{
     const response = await fetch(URL);
     if (!response.ok) {
@@ -16,3 +18,4 @@ export const getEventoById = async (id) =>{
     return await response.json();
 }
 
+ */
