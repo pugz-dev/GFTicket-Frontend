@@ -7,7 +7,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { environment } from '../../environments/environment';
 import { EventModel } from '../models/event.model';
-import { EventService } from './event';
+import { EventService } from './event.service';
 
 describe('EventService', () => {
   let service: EventService;
@@ -44,7 +44,7 @@ describe('EventService', () => {
       expect(event).toEqual(mockEvent);
     });
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/api/eventos/1`);
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos/1`);
     expect(req.request.method).toBe('GET');
     req.flush(mockEvent);
   });
