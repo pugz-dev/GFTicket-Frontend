@@ -11,7 +11,8 @@ GFTicket-Frontend/
 └── .github/workflows/  # CI workflows (commit-lint)
 ```
 
-> Both `gfticket-react` and `gfticket-angular` are currently placeholders (empty except for `.gitkeep`), awaiting each project's initial setup.
+- `gfticket-react`: admin panel (event CRUD).
+- `gfticket-angular`: public website (event listing, event detail, purchase flow).
 
 ## Commit conventions
 
