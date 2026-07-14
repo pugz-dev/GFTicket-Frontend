@@ -10,6 +10,6 @@ export class EventService {
   private readonly http = inject(HttpClient);
 
   getEventById(id: string): Observable<EventModel> {
-    return this.http.get<EventModel>(`${environment.apiUrl}/api/eventos/${id}`);
+    return this.http.get<EventModel>(`${environment.apiUrl}/eventos/${id}`);
   }
 }

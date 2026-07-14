@@ -1,8 +1,39 @@
 @if (loading) {
-  <p>Loading...</p>
+  <p class="status">Loading...</p>
 } @else if (error) {
-  <p>Event not found.</p>
+  <p class="status status--error">Event not found.</p>
 } @else if (event) {
-  <h1>{{ event.nombre }}</h1>
-  <p>{{ event.localidad }}</p>
+  <article class="event-detail">
+    <img class="event-detail__image" [src]="event.imagenUrl" [alt]="event.nombre" />
+
+    <div class="event-detail__body">
+      <span class="event-detail__genre">{{ event.genero }}</span>
+      <h1 class="event-detail__title">{{ event.nombre }}</h1>
+
+      <dl class="event-detail__meta">
+        <div class="event-detail__meta-item">
+          <dt>Fecha</dt>
+          <dd>{{ event.fechaEvento }}</dd>
+        </div>
+        <div class="event-detail__meta-item">
+          <dt>Hora</dt>
+          <dd>{{ event.horaEvento }}</dd>
+        </div>
+        <div class="event-detail__meta-item">
+          <dt>Recinto</dt>
+          <dd>{{ event.nombreRecinto }}</dd>
+        </div>
+        <div class="event-detail__meta-item">
+          <dt>Localidad</dt>
+          <dd>{{ event.localidad }}</dd>
+        </div>
+        <div class="event-detail__meta-item">
+          <dt>Precio</dt>
+          <dd>{{ event.precioMinimo }}€ - {{ event.precioMaximo }}€</dd>
+        </div>
+      </dl>
+
+      <p class="event-detail__description">{{ event.descripcion }}</p>
+    </div>
+  </article>
 }
