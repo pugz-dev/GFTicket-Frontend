@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { Temporal } from 'temporal-polyfill';
 
-import { Event } from '../../models/event';
-import { EventService } from '../../services/event';
+import { EventModel } from '../../models/event.model';
+import { EventService } from '../../services/event.service';
 import { EventDetail } from './event-detail';
 
 describe('EventDetail', () => {
@@ -12,18 +11,18 @@ describe('EventDetail', () => {
   let fixture: ComponentFixture<EventDetail>;
   let eventServiceSpy: jest.Mocked<EventService>;
 
-  const mockEvent: Event = {
-    id: '1',
-    title: 'Test Concert',
-    description: 'Test description',
-    eventDate: Temporal.PlainDate.from('2026-08-15'),
-    eventTime: Temporal.PlainTime.from('21:00'),
-    minPrice: 20,
-    maxPrice: 80,
-    city: 'Valencia',
-    genre: 'Rock',
-    venueName: 'Test Hall',
-    image: 'test.jpg',
+  const mockEvent: EventModel = {
+    id: 1,
+    nombre: 'Test Concert',
+    descripcion: 'Test description',
+    fechaEvento: '2026-08-15',
+    horaEvento: '21:00',
+    precioMinimo: 20,
+    precioMaximo: 80,
+    localidad: 'Valencia',
+    genero: 'Rock',
+    nombreRecinto: 'Test Hall',
+    imagenUrl: 'test.jpg',
   };
 
   beforeEach(async () => {
