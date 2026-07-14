@@ -1,0 +1,8 @@
+@if (loading) {
+  <p>Loading...</p>
+} @else if (error) {
+  <p>Event not found.</p>
+} @else if (event) {
+  <h1>{{ event.title }}</h1>
+  <p>{{ event.city }}</p>
+}
