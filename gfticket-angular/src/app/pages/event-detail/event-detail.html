@@ -1,1 +1,8 @@
-<p>event-detail works!</p>
+@if (loading) {
+  <p>Loading...</p>
+} @else if (error) {
+  <p>Event not found.</p>
+} @else if (event) {
+  <h1>{{ event.nombre }}</h1>
+  <p>{{ event.localidad }}</p>
+}
