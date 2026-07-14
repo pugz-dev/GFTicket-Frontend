@@ -27,6 +27,36 @@ describe('EventService', () => {
     imagenUrl: 'test.jpg',
   };
 
+  const mockEvents: EventModel[] = [
+    {
+      id: 1,
+      nombre: 'Test Concert',
+      descripcion: 'Test description',
+      fechaEvento: '2026-08-15',
+      horaEvento: '21:00',
+      precioMinimo: 20,
+      precioMaximo: 80,
+      localidad: 'Valencia',
+      genero: 'Rock',
+      nombreRecinto: 'Test Hall',
+      imagenUrl: 'test.jpg'
+    },
+    {
+      id: 2,
+      nombre: 'Test Theatre',
+      descripcion: 'Test description',
+      fechaEvento: '2026-08-28',
+      horaEvento: '19:00',
+      precioMinimo: 20,
+      precioMaximo: 80,
+      localidad: 'Zaragoza',
+      genero: 'Blues',
+      nombreRecinto: 'Test Hall',
+      imagenUrl: 'test.jpg'
+    }
+  ]
+    ;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()],
@@ -47,5 +77,15 @@ describe('EventService', () => {
     const req = httpMock.expectOne(`${environment.apiUrl}/eventos/1`);
     expect(req.request.method).toBe('GET');
     req.flush(mockEvent);
+  });
+
+  it('requests the events from the configured API URL', () => {
+    service.getEventos().subscribe((event) => {
+      expect(event).toEqual(mockEvents);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos/1`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockEvents);
   });
 });
