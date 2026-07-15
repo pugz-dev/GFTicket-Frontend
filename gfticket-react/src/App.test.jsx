@@ -7,7 +7,7 @@ describe('App Component', () => {
   it('should render the app title', () => {
     render(<App />);
     
-    const titleElement = screen.getByText(/Gfticket works/);
-    expect(titleElement).toBeTruthy();
+    const titleElement = screen.getByRole('heading', { name: 'GFTICKET - ADMIN PANEL' });
+    expect(titleElement).toBeInTheDocument();
   });
 });
