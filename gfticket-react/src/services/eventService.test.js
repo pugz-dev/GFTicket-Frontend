@@ -81,7 +81,7 @@ describe('getEvents', () => {
     });
 
 });
-/*
+
 describe('getEventById', () => {
     it('Receiving a correct response with no data/empty object returns an empty object', async () => {
         
@@ -89,13 +89,7 @@ describe('getEventById', () => {
         const result = await getEventById(1);
 
         expect(fetch).toHaveBeenCalledWith(`${API_URL}/1`);
-        expect(result).toEqual('{}');
-    });
-});
-*/
-describe('true', () => {
-    it('truthy', async () =>{
-        expect(true).toBeTruthy();
+        expect(result).toEqual(toEvento({}));
     });
 });
 
