@@ -28,15 +28,15 @@ const newEvent = {
   nombreRecinto: 'Café Central',
   imagenUrl: 'https://example.com/jazz.jpg',
 };
-/*
+
 describe('getEvents', () => {
     it('Receiving a correct response with no data/empty list returns an empty list', async () => {
         
-        fetch.mockResolvedValue({ok: true, status : 200, json: () => '[]'});
+        fetch.mockResolvedValue(jsonResponse([]));
         const result = await getEvents();
 
         expect(fetch).toHaveBeenCalledWith(API_URL);
-        expect(result).toEqual('[]');
+        expect(result).toEqual([]);
     });
 
     it('Incorrect response returns an error message', async () => {
@@ -47,7 +47,7 @@ describe('getEvents', () => {
     });
 
 });
-
+/*
 describe('getEventById', () => {
     it('Receiving a correct response with no data/empty object returns an empty object', async () => {
         
