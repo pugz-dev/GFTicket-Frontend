@@ -84,12 +84,34 @@ describe('getEvents', () => {
 
 describe('getEventById', () => {
     it('Receiving a correct response with no data/empty object returns an empty object', async () => {
-        
-        fetch.mockResolvedValue({ok: true, status : 200, json: () => '{}'});
+
+        fetch.mockResolvedValue(jsonResponse({}));
         const result = await getEventById(1);
 
         expect(fetch).toHaveBeenCalledWith(`${API_URL}/1`);
         expect(result).toEqual(toEvento({}));
+    });
+
+    it('fetches the event by its id and maps it to the front-end model', async () => {
+        //horaEvento comes from the API as a LocalTime object, not a string
+        const dto = { id: 42, ...newEvent, horaEvento: { hour: 20, minute: 30, second: 0, nano: 0 } };
+        fetch.mockResolvedValue(jsonResponse(dto));
+
+        const result = await getEventById(42);
+
+        expect(fetch).toHaveBeenCalledWith(`${API_URL}/42`);
+        expect(result).toEqual(expect.objectContaining({
+            id: 42,
+            nombre: 'Jazz Night',
+            horaEvento: '20:30',
+            nombreRecinto: 'Café Central',
+        }));
+    });
+
+    it('rejects with the status code when the event does not exist (404)', async () => {
+        fetch.mockResolvedValue(jsonResponse({ message: 'Evento no encontrado' }, 404));
+
+        await expect(getEventById(999)).rejects.toThrow('Error 404');
     });
 });
 
