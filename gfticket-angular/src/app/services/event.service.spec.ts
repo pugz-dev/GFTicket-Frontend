@@ -78,6 +78,36 @@ describe('EventService', () => {
     req.flush(mockEvent);
   });
 
+  it('propagates an error when getEventById fails', () => {
+    service.getEventById('1').subscribe({
+      next: () => fail('should not succeed'),
+      error: (err) => expect(err).toBeTruthy(),
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos/1`);
+    req.flush('simulated error', { status: 500, statusText: 'Server Error' });
+  });
+
+  it('propagates a 404 error when the event is not found', () => {
+    service.getEventById('999').subscribe({
+      next: () => fail('should not succeed'),
+      error: (err) => expect(err.status).toBe(404),
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos/999`);
+    req.flush('not found', { status: 404, statusText: 'Not Found' });
+  });
+
+  it('propagates a network error when getEventById has no connection', () => {
+    service.getEventById('1').subscribe({
+      next: () => fail('should not succeed'),
+      error: (err) => expect(err.error).toBeInstanceOf(ProgressEvent),
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos/1`);
+    req.error(new ProgressEvent('error'));
+  });
+
   it('returns the list of events when the request succeeds', () => {
     service.getEventos().subscribe((events) => {
       expect(events).toEqual(mockEvents);
@@ -106,6 +136,16 @@ describe('EventService', () => {
     const req = httpMock.expectOne(`${environment.apiUrl}/eventos`);
     expect(req.request.method).toBe('GET');
     req.flush([]);
+  });
+
+  it('propagates a network error when getEventos has no connection', () => {
+    service.getEventos().subscribe({
+      next: () => fail('should not succeed'),
+      error: (err) => expect(err.error).toBeInstanceOf(ProgressEvent),
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos`);
+    req.error(new ProgressEvent('error'));
   });
 
 });
