@@ -4,6 +4,7 @@ import { EventList } from './components/event-list/EventList';
 import { PageNotFound } from './components/page-not-found/PageNotFound'; 
 import './App.css'
 import { EventForm } from './components/event-form-component/EventFormComponent';
+import { EventDetail } from './components/event-detail-component/EventDetailComponent';
 
 function Layout(){
   return(
@@ -38,10 +39,10 @@ function App() {
 
           <Route path="eventos" element={<EventList />} />
           <Route path="eventos/add" element={<EventForm />} />
-          {/*
           <Route path="eventos/:id" element={<EventDetail />} />
-          
-          <Route path="eventos/edit/:id" element={<EventEdit />} /> 
+          {/*
+          <Route path="eventos/edit/:id" element={<EventEdit />} />
+          <Route path="eventos/delete/:id" element={<EventDelete />} /> 
            */}
         </Route>
         <Route path="*" element={<PageNotFound />}></Route>
