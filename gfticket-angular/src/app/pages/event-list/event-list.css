@@ -1,0 +1,57 @@
+:host {
+  --color-error: #b91c1c;
+
+  display: block;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.state--error {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.state__message {
+  font-size: 1.1rem;
+  color: var(--color-error);
+  margin: 0;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+.skeleton--line {
+  height: 1rem;
+  margin: 0 0 0.75rem;
+  max-width: 480px;
+}
+
+.skeleton--line-lg {
+  height: 1.75rem;
+  max-width: 320px;
+}
+
+.skeleton--line-md {
+  max-width: 400px;
+}
+
+.skeleton--line-sm {
+  max-width: 200px;
+}
+
+@keyframes skeleton-pulse {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
