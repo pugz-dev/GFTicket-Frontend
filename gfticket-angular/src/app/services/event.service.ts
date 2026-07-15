@@ -12,4 +12,8 @@ export class EventService {
   getEventById(id: string): Observable<EventModel> {
     return this.http.get<EventModel>(`${environment.apiUrl}/eventos/${id}`);
   }
+
+  getEventos(): Observable<EventModel[]> {
+    return this.http.get<EventModel[]>(`${environment.apiUrl}/eventos`);
+  }
 }
