@@ -4,6 +4,7 @@ import { of, throwError } from 'rxjs';
 import { EventModel } from '../../models/event.model';
 import { EventService } from '../../services/event.service';
 import { EventList } from './event-list';
+import { provideRouter } from '@angular/router';
 
 describe('EventList', () => {
   let component: EventList;
@@ -46,7 +47,9 @@ describe('EventList', () => {
 
     await TestBed.configureTestingModule({
       imports: [EventList],
-      providers: [{ provide: EventService, useValue: eventServiceSpy }],
+      providers: [{ provide: EventService, useValue: eventServiceSpy },
+      provideRouter([]),
+      ],
     }).compileComponents();
   });
 
