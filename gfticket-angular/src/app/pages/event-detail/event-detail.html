@@ -1,39 +1,52 @@
 @if (loading) {
-  <p class="status">Loading...</p>
+  <div class="page">
+    <div class="skeleton skeleton--image"></div>
+    <div class="skeleton skeleton--line skeleton--line-lg"></div>
+    <div class="skeleton skeleton--line skeleton--line-md"></div>
+    <div class="skeleton skeleton--line skeleton--line-sm"></div>
+  </div>
 } @else if (error) {
-  <p class="status status--error">Event not found.</p>
+  <div class="page state state--error">
+    <p class="state__message">Event not found.</p>
+    <a class="back-link" routerLink="/eventos">← Volver a eventos</a>
+  </div>
 } @else if (event) {
-  <article class="event-detail">
-    <img class="event-detail__image" [src]="event.imagenUrl" [alt]="event.nombre" />
+  <article class="page event-detail">
+    <a class="back-link" routerLink="/eventos">← Volver a eventos</a>
 
-    <div class="event-detail__body">
-      <span class="event-detail__genre">{{ event.genero }}</span>
-      <h1 class="event-detail__title">{{ event.nombre }}</h1>
+    <div class="event-detail__layout">
+      <img class="event-detail__image" [src]="event.imagenUrl" [alt]="event.nombre" />
 
-      <dl class="event-detail__meta">
-        <div class="event-detail__meta-item">
-          <dt>Fecha</dt>
-          <dd>{{ event.fechaEvento }}</dd>
-        </div>
-        <div class="event-detail__meta-item">
-          <dt>Hora</dt>
-          <dd>{{ event.horaEvento }}</dd>
-        </div>
-        <div class="event-detail__meta-item">
-          <dt>Recinto</dt>
-          <dd>{{ event.nombreRecinto }}</dd>
-        </div>
-        <div class="event-detail__meta-item">
-          <dt>Localidad</dt>
-          <dd>{{ event.localidad }}</dd>
-        </div>
-        <div class="event-detail__meta-item">
-          <dt>Precio</dt>
-          <dd>{{ event.precioMinimo }}€ - {{ event.precioMaximo }}€</dd>
-        </div>
-      </dl>
+      <div class="event-detail__body">
+        <span class="event-detail__genre">{{ event.genero }}</span>
+        <h1 class="event-detail__title">{{ event.nombre }}</h1>
 
-      <p class="event-detail__description">{{ event.descripcion }}</p>
+        <dl class="event-detail__meta">
+          <div class="event-detail__meta-item">
+            <dt>Fecha</dt>
+            <dd>{{ event.fechaEvento }}</dd>
+          </div>
+          <div class="event-detail__meta-item">
+            <dt>Hora</dt>
+            <dd>{{ event.horaEvento }}</dd>
+          </div>
+          <div class="event-detail__meta-item">
+            <dt>Recinto</dt>
+            <dd>{{ event.nombreRecinto }}</dd>
+          </div>
+          <div class="event-detail__meta-item">
+            <dt>Localidad</dt>
+            <dd>{{ event.localidad }}</dd>
+          </div>
+        </dl>
+
+        <div class="event-detail__price">
+          <span class="event-detail__price-label">Precio</span>
+          <span class="event-detail__price-value">{{ event.precioMinimo }}€ – {{ event.precioMaximo }}€</span>
+        </div>
+
+        <p class="event-detail__description">{{ event.descripcion }}</p>
+      </div>
     </div>
   </article>
 }
