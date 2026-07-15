@@ -20,4 +20,18 @@ module.exports = {
     '!src/**/*.module.ts',
     '!src/main.ts',
   ],
+  coverageThreshold: {
+    './src/app/services/**/*.ts': {
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70,
+    },
+    './src/app/components/**/*.ts': {
+      branches: 50,
+      functions: 50,
+      lines: 50,
+      statements: 50,
+    },
+  },
 };

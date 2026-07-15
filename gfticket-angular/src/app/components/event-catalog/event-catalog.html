@@ -1,0 +1,21 @@
+@for (event of events; track event.id) {
+<article class="event-card">
+    <img class="event-card__image" [src]="event.imagenUrl" [alt]="event.nombre" />
+
+    <div class="event-card__body">
+        <span class="event-card__genre">{{ event.genero }}</span>
+        <h2 class="event-card__title">{{ event.nombre }}</h2>
+
+        <dl class="event-card__meta">
+            <div class="event-card__meta-item">
+                <dt>Fecha</dt>
+                <dd>{{ event.fechaEvento }}</dd>
+            </div>
+            <div class="event-card__meta-item">
+                <dt>Localidad</dt>
+                <dd>{{ event.localidad }}</dd>
+            </div>
+        </dl>
+    </div>
+</article>
+}
