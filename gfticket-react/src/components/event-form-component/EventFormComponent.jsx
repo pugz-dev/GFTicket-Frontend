@@ -20,6 +20,9 @@ export const EventForm = () => {
 
     const [evento, setEvento] = useState(() => INITIAL_EVENTO);
 
+    //Result of the last submit: 'success' | 'error' | null (nothing to report)
+    const [submitStatus, setSubmitStatus] = useState(null);
+
     //Update form status
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -29,6 +32,8 @@ export const EventForm = () => {
             ...prev,
             [name]: esPrecio && value !== '' ? parseInt(value, 10) : value
         }));
+        //Any typing means a new attempt: dismiss the previous submit feedback
+        setSubmitStatus(null);
     };
 
     //Show validation errors only if field was touched
@@ -87,9 +92,11 @@ export const EventForm = () => {
             //Only clear the form once the backend has accepted the event
             setEvento(INITIAL_EVENTO);
             setTouched({});
+            setSubmitStatus('success');
         } catch (error) {
-            //Keep the values so the user can correct and resubmit; error UI pending
+            //Keep the values so the user can correct and resubmit
             console.error(error);
+            setSubmitStatus('error');
         }
     };
 
@@ -209,6 +216,17 @@ export const EventForm = () => {
             <p>
                 <button type="submit" disabled={isFormInvalid}>Registrar evento</button>
             </p>
+            {/*role="status" (polite live region), not "alert": success is not urgent*/}
+            {submitStatus === 'success' && (
+                <div className="alert alert-success" role="status">
+                    Evento creado correctamente.
+                </div>
+            )}
+            {submitStatus === 'error' && (
+                <div className="alert alert-danger" role="alert">
+                    No se pudo crear el evento. Inténtalo de nuevo.
+                </div>
+            )}
         </form>
     );
 }
