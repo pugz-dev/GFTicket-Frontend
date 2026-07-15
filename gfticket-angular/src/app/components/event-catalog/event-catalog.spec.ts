@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { EventCatalog } from './event-catalog';
 import { EventModel } from '../../models/event.model';
@@ -39,6 +40,7 @@ describe('EventCatalog', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [EventCatalog],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EventCatalog);
@@ -83,5 +85,16 @@ describe('EventCatalog', () => {
 
     const cards = compiled.querySelectorAll('.event-card');
     expect(cards.length).toBe(0);
+  });
+
+  it('links each card to its event detail page', () => {
+    fixture.componentRef.setInput('events', mockEvents);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    const links = compiled.querySelectorAll('.event-card');
+    for (const [i, event] of mockEvents.entries()) {
+      expect(links[i].getAttribute('href')).toBe(`/eventos/${event.id}`);
+    }
   });
 });
