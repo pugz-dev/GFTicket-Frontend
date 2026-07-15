@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { EventModel } from "../../models/event.model";
 
 @Component({
   selector: 'app-event-catalog',
@@ -6,4 +7,6 @@ import { Component } from '@angular/core';
   templateUrl: './event-catalog.html',
   styleUrl: './event-catalog.css',
 })
-export class EventCatalog {}
+export class EventCatalog {
+  @Input() events: EventModel[] = [];
+}

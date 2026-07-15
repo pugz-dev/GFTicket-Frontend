@@ -51,7 +51,7 @@ describe('EventCatalog', () => {
   });
 
   it('shows the event name, location, genre, date and image for each event', () => {
-    component.events = mockEvents;
+    fixture.componentRef.setInput('events', mockEvents);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     const images = compiled.querySelectorAll('img');
@@ -68,7 +68,7 @@ describe('EventCatalog', () => {
   });
 
   it('renders one card per event', () => {
-    component.events = mockEvents;
+    fixture.componentRef.setInput('events', mockEvents);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
 
@@ -77,7 +77,7 @@ describe('EventCatalog', () => {
   });
 
   it('renders no cards when there are no events', () => {
-    component.events = [];
+    fixture.componentRef.setInput('events', []);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
 
