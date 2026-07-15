@@ -39,7 +39,7 @@ function App() {
 
           <Route path="eventos" element={<EventList />} />
           <Route path="eventos/add" element={<EventForm />} />
-          <Route path="eventos/:id" element={<EventDetailComponent />} />
+          <Route path="eventos/:id" element={<EventDetail />} />
           {/*
           <Route path="eventos/edit/:id" element={<EventEdit />} />
           <Route path="eventos/delete/:id" element={<EventDelete />} /> 
