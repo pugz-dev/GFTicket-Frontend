@@ -8,17 +8,20 @@ import { EventForm } from './components/event-form-component/EventFormComponent'
 function Layout(){
   return(
     <>
-    <div><h1>GFTICKET - ADMIN PANEL</h1></div>
-    <nav>
-      <Link to="/eventos" className="btn btn-link">
-        List
-      </Link>
-      <Link to="/eventos/add" className="btn btn-link" style={{ marginLeft: "10px" }}>
-        Add
-      </Link>
-    </nav>
-    <br />
+    <header className="admin-header">
+      <h1>GFTICKET - ADMIN PANEL</h1>
+      <nav className="admin-nav">
+        <Link to="/eventos" className="btn btn-link">
+          List
+        </Link>
+        <Link to="/eventos/add" className="btn btn-link">
+          Add
+        </Link>
+      </nav>
+    </header>
+    <main className="admin-main">
       <Outlet />
+    </main>
     </>
   );
 }
