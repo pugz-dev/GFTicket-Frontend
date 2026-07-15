@@ -28,15 +28,49 @@ const newEvent = {
   nombreRecinto: 'Café Central',
   imagenUrl: 'https://example.com/jazz.jpg',
 };
-/*
+
 describe('getEvents', () => {
     it('Receiving a correct response with no data/empty list returns an empty list', async () => {
         
-        fetch.mockResolvedValue({ok: true, status : 200, json: () => '[]'});
+        fetch.mockResolvedValue(jsonResponse([]));
         const result = await getEvents();
 
         expect(fetch).toHaveBeenCalledWith(API_URL);
-        expect(result).toEqual('[]');
+        expect(result).toEqual([]);
+    });
+
+    it('returns the events mapped to the front-end model (horaEvento as "HH:mm")', async () => {
+        //horaEvento comes from the API as a LocalTime object, not a string
+        const dtos = [
+            { id: 1, ...newEvent, horaEvento: { hour: 20, minute: 30, second: 0, nano: 0 } },
+            { id: 2, ...newEvent, nombre: 'Morning Chill', horaEvento: { hour: 9, minute: 5, second: 0, nano: 0 } },
+        ];
+        fetch.mockResolvedValue(jsonResponse(dtos));
+
+        const result = await getEvents();
+
+        expect(fetch).toHaveBeenCalledWith(API_URL);
+        expect(result).toHaveLength(2);
+        expect(result[0]).toEqual(expect.objectContaining({
+            id: 1,
+            nombre: 'Jazz Night',
+            horaEvento: '20:30',
+        }));
+        //Single-digit hour/minute must come out zero-padded
+        expect(result[1].horaEvento).toBe('09:05');
+    });
+
+    it('returns an empty list when the API responds 204 No Content', async () => {
+        //A 204 has no body: json() must never be called on it
+        fetch.mockResolvedValue({
+            ok: true,
+            status: 204,
+            json: () => Promise.reject(new Error('204 has no body')),
+        });
+
+        const result = await getEvents();
+
+        expect(result).toEqual([]);
     });
 
     it('Incorrect response returns an error message', async () => {
@@ -47,7 +81,7 @@ describe('getEvents', () => {
     });
 
 });
-
+/*
 describe('getEventById', () => {
     it('Receiving a correct response with no data/empty object returns an empty object', async () => {
         
