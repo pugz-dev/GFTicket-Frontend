@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
 import { EventModel } from '../../models/event.model';
-import { EventService } from '../../services/event';
+import { EventService } from '../../services/event.service';
 import { EventDetail } from './event-detail';
 
 describe('EventDetail', () => {

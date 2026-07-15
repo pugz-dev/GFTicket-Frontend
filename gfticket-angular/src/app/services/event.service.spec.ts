@@ -7,7 +7,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { environment } from '../../environments/environment';
 import { EventModel } from '../models/event.model';
-import { EventService } from './event';
+import { EventService } from './event.service';
 
 describe('EventService', () => {
   let service: EventService;
