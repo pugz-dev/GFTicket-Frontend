@@ -6,6 +6,7 @@ import { EventService } from '../../services/event.service';
 
 @Component({
   selector: 'app-event-detail',
+  standalone: true,
   imports: [RouterLink],
   templateUrl: './event-detail.html',
   styleUrl: './event-detail.css',
