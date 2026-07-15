@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Link, Outlet, Navigate } from "react-rout
 import { EventList } from './components/event-list/EventList';
 import { PageNotFound } from './components/page-not-found/PageNotFound'; 
 import './App.css'
+import { EventForm } from './components/event-form-component/EventFormComponent';
 
 function Layout(){
   return(
@@ -27,16 +28,16 @@ function App() {
 
   return (
     <>
-    Gfticket works
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
          <Route index element={<Navigate to="/eventos" replace />} />
 
           <Route path="eventos" element={<EventList />} />
+          <Route path="eventos/add" element={<EventForm />} />
           {/*
           <Route path="eventos/:id" element={<EventDetail />} />
-          <Route path="eventos/nuevo" element={<EventAdd />} />
+          
           <Route path="eventos/edit/:id" element={<EventEdit />} /> 
            */}
         </Route>

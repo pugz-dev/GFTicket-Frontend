@@ -2,18 +2,18 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
     {
-        path: 'events',
+        path: 'eventos',
         loadComponent: () => import('./pages/event-list/event-list').then(m => m.EventList)
     },
 
     {
-        path: 'events/:id',
+        path: 'eventos/:id',
         loadComponent: () => import('./pages/event-detail/event-detail').then(m => m.EventDetail)
     },
 
     {
         path: '',
-        redirectTo: 'events',
+        redirectTo: 'eventos',
         pathMatch: 'full'
     }
 ];

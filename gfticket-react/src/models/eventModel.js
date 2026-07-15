@@ -39,6 +39,13 @@ export function toEvento(dto) {
   };
 }
 
+export const INITIAL_EVENTO = {
+  nombre: '', descripcion: '', fechaEvento: '', horaEvento: '',
+  precioMinimo: '', precioMaximo: '', localidad: '', genero: '',
+  nombreRecinto: '', imagenUrl: '',
+};
+
+
 /* API response:
  {
     "id": 0,
