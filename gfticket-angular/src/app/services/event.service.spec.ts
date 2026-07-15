@@ -54,8 +54,7 @@ describe('EventService', () => {
       nombreRecinto: 'Test Hall',
       imagenUrl: 'test.jpg'
     }
-  ]
-    ;
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -79,13 +78,34 @@ describe('EventService', () => {
     req.flush(mockEvent);
   });
 
-  it('requests the events from the configured API URL', () => {
-    service.getEventos().subscribe((event) => {
-      expect(event).toEqual(mockEvents);
+  it('returns the list of events when the request succeeds', () => {
+    service.getEventos().subscribe((events) => {
+      expect(events).toEqual(mockEvents);
     });
 
-    const req = httpMock.expectOne(`${environment.apiUrl}/eventos/1`);
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos`);
     expect(req.request.method).toBe('GET');
     req.flush(mockEvents);
   });
+
+  it('propagates an error when the request fails', () => {
+    service.getEventos().subscribe({
+      next: () => fail('should not succeed'),
+      error: (err) => expect(err).toBeTruthy(),
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos`);
+    req.flush('simulated error', { status: 500, statusText: 'Server Error' });
+  });
+
+  it('returns an empty array when the API returns no events', () => {
+    service.getEventos().subscribe((events) => {
+      expect(events).toEqual([]);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos`);
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
+  });
+
 });
