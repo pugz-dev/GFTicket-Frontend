@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { INITIAL_EVENTO } from '../../models/eventModel';
 import { createEvent } from '../../services/eventService';
+import './EventFormComponent.css';
 
 //Shows the active errors of a field, only once the user has left it (touched)
 const ValidatorAlert = ({ validators, touched, field }) => {
@@ -101,132 +102,136 @@ export const EventForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>Crear Evento</h2>
-            <p>Introduce la información del evento</p>
-            <p>
-                <label htmlFor="nombre">Nombre: </label>
-                <input
-                    id="nombre"
-                    type="text"
-                    name="nombre"
-                    value={evento.nombre}
-                    onChange={handleChange}
-                    onBlur={handleBlur} />
-            </p>
-            <ValidatorAlert validators={validators} touched={touched} field="nombre" />
-            <p>
-                <label htmlFor="descripcion">Descripcion: </label>
-                <input
-                    id="descripcion"
-                    type="text"
-                    name="descripcion"
-                    value={evento.descripcion}
-                    onChange={handleChange}
-                    onBlur={handleBlur} />
-            </p>
-            <p>
-                <label htmlFor="fechaEvento">Fecha: </label>
-                <input
-                    id="fechaEvento"
-                    type="date"
-                    name="fechaEvento"
-                    value={evento.fechaEvento}
-                    onChange={handleChange}
-                    onBlur={handleBlur} />
-            </p>
-            <ValidatorAlert validators={validators} touched={touched} field="fechaEvento" />
-            <p>
-                <label htmlFor="horaEvento">Hora: </label>
-                <input
-                    id="horaEvento"
-                    type="time"
-                    name="horaEvento"
-                    value={evento.horaEvento}
-                    onChange={handleChange}
-                    onBlur={handleBlur} />
-            </p>
-            <ValidatorAlert validators={validators} touched={touched} field="horaEvento" />
-            <p>
-                <label htmlFor="precioMinimo">Precio mínimo: </label>
-                <input
-                    id="precioMinimo"
-                    type="number"
-                    name="precioMinimo"
-                    min="0"
-                    value={evento.precioMinimo}
-                    onChange={handleChange}
-                    onBlur={handleBlur} />
-            </p>
-            <ValidatorAlert validators={validators} touched={touched} field="precioMinimo" />
-            <p>
-                <label htmlFor="precioMaximo">Precio máximo: </label>
-                <input
-                    id="precioMaximo"
-                    type="number"
-                    name="precioMaximo"
-                    min="0"
-                    value={evento.precioMaximo}
-                    onChange={handleChange}
-                    onBlur={handleBlur} />
-            </p>
-            <ValidatorAlert validators={validators} touched={touched} field="precioMaximo" />
-            <p>
-                <label htmlFor="localidad">Localidad: </label>
-                <input
-                    id="localidad"
-                    type="text"
-                    name="localidad"
-                    value={evento.localidad}
-                    onChange={handleChange}
-                    onBlur={handleBlur} />
-            </p>
-            <ValidatorAlert validators={validators} touched={touched} field="localidad" />
-            <p>
-                <label htmlFor="genero">Género: </label>
-                <input
-                    id="genero"
-                    type="text"
-                    name="genero"
-                    value={evento.genero}
-                    onChange={handleChange}
-                    onBlur={handleBlur} />
-            </p>
-            <p>
-                <label htmlFor="nombreRecinto">Nombre del recinto: </label>
-                <input
-                    id="nombreRecinto"
-                    type="text"
-                    name="nombreRecinto"
-                    value={evento.nombreRecinto}
-                    onChange={handleChange}
-                    onBlur={handleBlur} />
-            </p>
-            <ValidatorAlert validators={validators} touched={touched} field="nombreRecinto" />
-            <p>
-                <label htmlFor="imagenUrl">URL de la imagen: </label>
-                <input
-                    id="imagenUrl"
-                    type="url"
-                    name="imagenUrl"
-                    value={evento.imagenUrl}
-                    onChange={handleChange}
-                    onBlur={handleBlur} />
-            </p>
-            <p>
-                <button type="submit" disabled={isFormInvalid}>Registrar evento</button>
-            </p>
-            {/*role="status" (polite live region), not "alert": success is not urgent*/}
-            {submitStatus === 'success' && (
-                <div className="alert alert-success" role="status">
-                    Evento creado correctamente.
+        <form className="event-form" onSubmit={handleSubmit}>
+            <h2 className="event-form__title">Crear Evento</h2>
+            <p className="event-form__subtitle">Introduce la información del evento</p>
+            <div className="event-form__grid">
+                <div className="event-form__field event-form__field--full">
+                    <label htmlFor="nombre">Nombre: </label>
+                    <input
+                        id="nombre"
+                        type="text"
+                        name="nombre"
+                        value={evento.nombre}
+                        onChange={handleChange}
+                        onBlur={handleBlur} />
+                    <ValidatorAlert validators={validators} touched={touched} field="nombre" />
                 </div>
-            )}
-            {submitStatus === 'error' && (
-                <div className="alert alert-danger" role="alert">
-                    No se pudo crear el evento. Inténtalo de nuevo.
+                <div className="event-form__field event-form__field--full">
+                    <label htmlFor="descripcion">Descripcion: </label>
+                    <input
+                        id="descripcion"
+                        type="text"
+                        name="descripcion"
+                        value={evento.descripcion}
+                        onChange={handleChange}
+                        onBlur={handleBlur} />
                 </div>
-            )}
+                <div className="event-form__field">
+                    <label htmlFor="fechaEvento">Fecha: </label>
+                    <input
+                        id="fechaEvento"
+                        type="date"
+                        name="fechaEvento"
+                        value={evento.fechaEvento}
+                        onChange={handleChange}
+                        onBlur={handleBlur} />
+                    <ValidatorAlert validators={validators} touched={touched} field="fechaEvento" />
+                </div>
+                <div className="event-form__field">
+                    <label htmlFor="horaEvento">Hora: </label>
+                    <input
+                        id="horaEvento"
+                        type="time"
+                        name="horaEvento"
+                        value={evento.horaEvento}
+                        onChange={handleChange}
+                        onBlur={handleBlur} />
+                    <ValidatorAlert validators={validators} touched={touched} field="horaEvento" />
+                </div>
+                <div className="event-form__field">
+                    <label htmlFor="precioMinimo">Precio mínimo: </label>
+                    <input
+                        id="precioMinimo"
+                        type="number"
+                        name="precioMinimo"
+                        min="0"
+                        value={evento.precioMinimo}
+                        onChange={handleChange}
+                        onBlur={handleBlur} />
+                    <ValidatorAlert validators={validators} touched={touched} field="precioMinimo" />
+                </div>
+                <div className="event-form__field">
+                    <label htmlFor="precioMaximo">Precio máximo: </label>
+                    <input
+                        id="precioMaximo"
+                        type="number"
+                        name="precioMaximo"
+                        min="0"
+                        value={evento.precioMaximo}
+                        onChange={handleChange}
+                        onBlur={handleBlur} />
+                    <ValidatorAlert validators={validators} touched={touched} field="precioMaximo" />
+                </div>
+                <div className="event-form__field">
+                    <label htmlFor="localidad">Localidad: </label>
+                    <input
+                        id="localidad"
+                        type="text"
+                        name="localidad"
+                        value={evento.localidad}
+                        onChange={handleChange}
+                        onBlur={handleBlur} />
+                    <ValidatorAlert validators={validators} touched={touched} field="localidad" />
+                </div>
+                <div className="event-form__field">
+                    <label htmlFor="genero">Género: </label>
+                    <input
+                        id="genero"
+                        type="text"
+                        name="genero"
+                        value={evento.genero}
+                        onChange={handleChange}
+                        onBlur={handleBlur} />
+                </div>
+                <div className="event-form__field event-form__field--full">
+                    <label htmlFor="nombreRecinto">Nombre del recinto: </label>
+                    <input
+                        id="nombreRecinto"
+                        type="text"
+                        name="nombreRecinto"
+                        value={evento.nombreRecinto}
+                        onChange={handleChange}
+                        onBlur={handleBlur} />
+                    <ValidatorAlert validators={validators} touched={touched} field="nombreRecinto" />
+                </div>
+                <div className="event-form__field event-form__field--full">
+                    <label htmlFor="imagenUrl">URL de la imagen: </label>
+                    <input
+                        id="imagenUrl"
+                        type="url"
+                        name="imagenUrl"
+                        value={evento.imagenUrl}
+                        onChange={handleChange}
+                        onBlur={handleBlur} />
+                </div>
+            </div>
+            <div className="event-form__actions">
+                <button className="event-form__submit" type="submit" disabled={isFormInvalid}>
+                    Registrar evento
+                </button>
+                {/*role="status" (polite live region), not "alert": success is not urgent*/}
+                {submitStatus === 'success' && (
+                    <div className="alert alert-success" role="status">
+                        Evento creado correctamente.
+                    </div>
+                )}
+                {submitStatus === 'error' && (
+                    <div className="alert alert-danger" role="alert">
+                        No se pudo crear el evento. Inténtalo de nuevo.
+                    </div>
+                )}
+            </div>
         </form>
     );
 }

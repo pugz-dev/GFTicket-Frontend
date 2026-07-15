@@ -1,5 +1,5 @@
 @for (event of events; track event.id) {
-<article class="event-card">
+<a class="event-card" [routerLink]="['/eventos', event.id]">
     <img class="event-card__image" [src]="event.imagenUrl" [alt]="event.nombre" />
 
     <div class="event-card__body">
@@ -17,5 +17,5 @@
             </div>
         </dl>
     </div>
-</article>
+</a>
 }
