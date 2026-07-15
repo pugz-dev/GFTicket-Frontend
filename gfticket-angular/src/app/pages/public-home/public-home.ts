@@ -1,13 +1,13 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
+import { EventCatalog } from '../../components/event-catalog/event-catalog';
 import { EventModel } from '../../models/event.model';
 import { EventService } from '../../services/event.service';
 
 @Component({
   selector: 'app-public-home',
   standalone: true,
-  imports: [RouterLink],
+  imports: [EventCatalog],
   templateUrl: './public-home.html',
   styleUrl: './public-home.css',
 })

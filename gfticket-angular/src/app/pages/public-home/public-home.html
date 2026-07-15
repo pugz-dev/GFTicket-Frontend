@@ -3,30 +3,18 @@
   <p class="hero__subtitle">Descubre y reserva las entradas para tus próximos eventos favoritos.</p>
 </header>
 
-<main class="events">
-  @if (loading) {
-    <div class="events__grid">
-      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
-        <div class="card card--skeleton"></div>
-      }
-    </div>
-  } @else if (error) {
-    <p class="events__status events__status--error">No se han podido cargar los eventos.</p>
-  } @else if (events.length === 0) {
-    <p class="events__status">No hay eventos disponibles por ahora.</p>
-  } @else {
-    <div class="events__grid">
-      @for (event of events; track event.id) {
-        <a class="card" [routerLink]="['/eventos', event.id]">
-          <img class="card__image" [src]="event.imagenUrl" [alt]="event.nombre" />
-          <div class="card__body">
-            <span class="card__genre">{{ event.genero }}</span>
-            <h2 class="card__title">{{ event.nombre }}</h2>
-            <p class="card__meta">{{ event.fechaEvento }} · {{ event.localidad }}</p>
-            <p class="card__price">{{ event.precioMinimo }}€ – {{ event.precioMaximo }}€</p>
-          </div>
-        </a>
-      }
-    </div>
-  }
-</main>
+@if (loading) {
+  <div class="page">
+    <div class="skeleton skeleton--line skeleton--line-lg"></div>
+    <div class="skeleton skeleton--line skeleton--line-md"></div>
+    <div class="skeleton skeleton--line skeleton--line-sm"></div>
+  </div>
+} @else if (error) {
+  <div class="page state state--error">
+    <p class="state__message">No se han podido cargar los eventos.</p>
+  </div>
+} @else {
+  <div class="page">
+    <app-event-catalog [events]="events" />
+  </div>
+}
