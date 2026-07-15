@@ -1,0 +1,94 @@
+/* Card container, same surface language as the form and the Angular event cards */
+.event-list {
+  padding: 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.event-list__title {
+  margin: 0;
+  font-size: 1.35rem;
+  color: var(--color-text);
+}
+
+.event-list__subtitle {
+  margin: 0.25rem 0 1.5rem;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+/* Loading and empty-state messages */
+.event-list__status {
+  margin: 0;
+  padding: 2rem 0;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.event-list__count {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+/* The table keeps its natural width; on narrow screens the wrapper scrolls instead */
+.event-list__table-wrapper {
+  overflow-x: auto;
+}
+
+.event-list__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+/* Same caption treatment as the dt labels on the customer side */
+.event-list__table th {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.event-list__table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.event-list__table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.event-list__table tbody tr:hover {
+  background: var(--color-primary-bg);
+}
+
+.event-list__link {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.event-list__link:hover {
+  text-decoration: underline;
+}
+
+/* Genre pill, borrowed from the Angular event cards */
+.event-list__genre {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--color-primary-bg);
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
