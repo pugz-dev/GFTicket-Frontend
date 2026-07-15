@@ -1,13 +1,82 @@
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getEventById } from '../../services/eventService';
+//import './EventDetailComponent.css';
 
 export function EventDetail() {
     const { id } = useParams();
-    const event = getEventById( id );
+
+    const [evento, setEvento] = useState(null);
+    const [loading, setLoading] = useState(true);
+    //Error check containing error message
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        //A stale fetch (unmount, or id changed mid-flight) must not reach state
+        let ignore = false;
+        setLoading(true);
+        setError(null);
+
+        const fetchEvent = async () => {
+            try {
+                const data = await getEventById(id);
+                if (!ignore) setEvento(data);
+            } catch (err) {
+                console.error(err);
+                if (!ignore) setError(err.message === 'Error 404' ? 'notfound' : 'error');
+            } finally {
+                if (!ignore) setLoading(false);
+            }
+        };
+        fetchEvent();
+
+        return () => { ignore = true; };
+    }, [id]); //navigating from /eventos/1 to /eventos/2 must refetch
+
     return (
-        <section className="EventDetail">
-            
-            <Link to="/eventos/">← Volver al listado</Link>
+        <section className="event-detail">
+            <Link className="event-detail__back" to="/eventos">← Volver al listado</Link>
+            {loading && <p className="event-detail__status">Cargando evento...</p>}
+            {!loading && error === 'notfound' && (
+                <div className="alert alert-danger" role="alert">Evento con id: {id} no encontrado.</div>
+            )}
+            {!loading && error === 'error' && (
+                <div className="alert alert-danger" role="alert">No se pudo cargar el evento con id: {id}.</div>
+            )}
+            {!loading && !error && evento && (
+                <div className="event-detail__layout">
+                    <div>
+                        <span className="event-detail__genre">{evento.genero}</span>
+                        <h2 className="event-detail__title">{evento.nombre}</h2>
+                        <dl className="event-detail__meta">
+                            <div className="event-detail__meta-item">
+                                <dt>Fecha</dt>
+                                <dd>{evento.fechaEvento}</dd>
+                            </div>
+                            <div className="event-detail__meta-item">
+                                <dt>Hora</dt>
+                                <dd>{evento.horaEvento}</dd>
+                            </div>
+                            <div className="event-detail__meta-item">
+                                <dt>Localidad</dt>
+                                <dd>{evento.localidad}</dd>
+                            </div>
+                            <div className="event-detail__meta-item">
+                                <dt>Recinto</dt>
+                                <dd>{evento.nombreRecinto}</dd>
+                            </div>
+                        </dl>
+                        <p className="event-detail__price">
+                            <span className="event-detail__price-label">Precio</span>
+                            <span className="event-detail__price-value">
+                                {evento.precioMinimo ?? 'N/A'}€ ~ {evento.precioMaximo ?? 'N/A'}€
+                            </span>
+                        </p>
+                        <p className="event-detail__description">{evento.descripcion}</p>
+                    </div>
+                    <img className="event-detail__image" src={evento.imagenUrl} alt={evento.nombre} />
+                </div>
+            )}
         </section>
     );
 }
