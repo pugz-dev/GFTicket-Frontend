@@ -1,5 +1,5 @@
 /**
- * @typedef {Object} Evento
+ * @typedef {Object} EventoModel
  * @property {number} id
  * @property {string} nombre
  * @property {string} descripcion
@@ -22,7 +22,7 @@ function toHoraEvento(hora) {
   return `${pad(hora.hour)}:${pad(hora.minute)}`;
 }
 
-/** @returns {Evento} */
+/** @returns {EventoModel} */
 export function toEvento(dto) {
   return {
     id: dto.id,
