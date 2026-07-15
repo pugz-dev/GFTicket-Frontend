@@ -2,6 +2,20 @@ import { useState } from 'react';
 import { INITIAL_EVENTO } from '../../models/eventModel';
 import { createEvent } from '../../services/eventService';
 
+//Shows the active errors of a field, only once the user has left it (touched)
+const ValidatorAlert = ({ validators, touched, field }) => {
+    const errors = validators[field];
+    if (!touched[field] || !Object.values(errors).some(Boolean)) return null;
+    return (
+        <div className="alert alert-danger" role="alert">
+            {errors.required && <div>Este campo es obligatorio.</div>}
+            {!errors.required && errors.minlength && <div>Debe tener al menos 3 caracteres.</div>}
+            {!errors.required && errors.positiveNumber && <div>Debe ser un valor positivo.</div>}
+            {errors.rango && <div>El precio máximo no puede ser menor que el mínimo.</div>}
+        </div>
+    );
+};
+
 export const EventForm = () => {
 
     const [evento, setEvento] = useState(() => INITIAL_EVENTO);
@@ -23,12 +37,53 @@ export const EventForm = () => {
         setTouched(prev => ({ ...prev, [e.target.name]: true }));
     };
 
+    //Each field maps to its error conditions; a field is invalid if any of them is true.
+    //descripcion, genero e imagenUrl are optional (until declared otherwise as business rule): no entry here, no validation.
+    const validators = {
+        nombre: {
+            required: evento.nombre.trim() === '',
+            minlength: evento.nombre.trim().length < 3,
+        },
+        fechaEvento: {
+            required: evento.fechaEvento === '',
+        },
+        horaEvento: {
+            required: evento.horaEvento === '',
+        },
+        precioMinimo: {
+            required: evento.precioMinimo === '',
+            positiveNumber: evento.precioMinimo < 0,
+
+        },
+        precioMaximo: {
+            required: evento.precioMaximo === '',
+            positiveNumber: evento.precioMaximo < 0,
+            //Both prices are numbers here (handleChange parses them); '' skips the check
+            rango: evento.precioMaximo !== '' && evento.precioMinimo !== ''
+                && evento.precioMaximo < evento.precioMinimo,
+        },
+        localidad: {
+            required: evento.localidad.trim() === '',
+        },
+        nombreRecinto: {
+            required: evento.nombreRecinto.trim() === '',
+        },
+    };
+
+    const isFieldInvalid = (field) =>
+        Object.values(validators[field]).some(Boolean);
+
+    const isFormInvalid = Object.keys(validators).some(isFieldInvalid);
+
     const handleSubmit = async (e) => {
         //Prevent the browser's default full-page reload on submit
         e.preventDefault();
 
+        //The button is disabled, but the form can still be submitted (e.g. Enter key)
+        if (isFormInvalid) return;
+
         try {
-            await createEvent(evento);
+            console.log(await createEvent(evento));
             //Only clear the form once the backend has accepted the event
             setEvento(INITIAL_EVENTO);
             setTouched({});
@@ -52,6 +107,7 @@ export const EventForm = () => {
                     onChange={handleChange}
                     onBlur={handleBlur} />
             </p>
+            <ValidatorAlert validators={validators} touched={touched} field="nombre" />
             <p>
                 <label htmlFor="descripcion">Descripcion: </label>
                 <input
@@ -72,6 +128,7 @@ export const EventForm = () => {
                     onChange={handleChange}
                     onBlur={handleBlur} />
             </p>
+            <ValidatorAlert validators={validators} touched={touched} field="fechaEvento" />
             <p>
                 <label htmlFor="horaEvento">Hora: </label>
                 <input
@@ -82,6 +139,7 @@ export const EventForm = () => {
                     onChange={handleChange}
                     onBlur={handleBlur} />
             </p>
+            <ValidatorAlert validators={validators} touched={touched} field="horaEvento" />
             <p>
                 <label htmlFor="precioMinimo">Precio mínimo: </label>
                 <input
@@ -93,6 +151,7 @@ export const EventForm = () => {
                     onChange={handleChange}
                     onBlur={handleBlur} />
             </p>
+            <ValidatorAlert validators={validators} touched={touched} field="precioMinimo" />
             <p>
                 <label htmlFor="precioMaximo">Precio máximo: </label>
                 <input
@@ -104,6 +163,7 @@ export const EventForm = () => {
                     onChange={handleChange}
                     onBlur={handleBlur} />
             </p>
+            <ValidatorAlert validators={validators} touched={touched} field="precioMaximo" />
             <p>
                 <label htmlFor="localidad">Localidad: </label>
                 <input
@@ -114,6 +174,7 @@ export const EventForm = () => {
                     onChange={handleChange}
                     onBlur={handleBlur} />
             </p>
+            <ValidatorAlert validators={validators} touched={touched} field="localidad" />
             <p>
                 <label htmlFor="genero">Género: </label>
                 <input
@@ -134,6 +195,7 @@ export const EventForm = () => {
                     onChange={handleChange}
                     onBlur={handleBlur} />
             </p>
+            <ValidatorAlert validators={validators} touched={touched} field="nombreRecinto" />
             <p>
                 <label htmlFor="imagenUrl">URL de la imagen: </label>
                 <input
@@ -145,7 +207,7 @@ export const EventForm = () => {
                     onBlur={handleBlur} />
             </p>
             <p>
-                <button type="submit">Registrar evento</button>
+                <button type="submit" disabled={isFormInvalid}>Registrar evento</button>
             </p>
         </form>
     );
