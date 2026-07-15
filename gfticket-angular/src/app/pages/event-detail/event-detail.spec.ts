@@ -83,13 +83,24 @@ describe('EventDetail', () => {
     expect(component.error).toBe(false);
   });
 
-  it('should show the event title and city in the DOM', () => {
+  it('should show all the event information in the DOM', () => {
     eventServiceSpy.getEventById.mockReturnValue(of(mockEvent));
     createComponent();
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('Test Concert');
-    expect(compiled.textContent).toContain('Valencia');
+    expect(compiled.textContent).toContain(mockEvent.nombre);
+    expect(compiled.textContent).toContain(mockEvent.descripcion);
+    expect(compiled.textContent).toContain(mockEvent.fechaEvento);
+    expect(compiled.textContent).toContain(mockEvent.horaEvento);
+    expect(compiled.textContent).toContain(mockEvent.localidad);
+    expect(compiled.textContent).toContain(mockEvent.genero);
+    expect(compiled.textContent).toContain(mockEvent.nombreRecinto);
+    expect(compiled.textContent).toContain(`${mockEvent.precioMinimo}`);
+    expect(compiled.textContent).toContain(`${mockEvent.precioMaximo}`);
+
+    const image = compiled.querySelector('img');
+    expect(image?.getAttribute('src')).toBe(mockEvent.imagenUrl);
+    expect(image?.getAttribute('alt')).toBe(mockEvent.nombre);
   });
 
   it('should set the error state when the event does not exist (404)', () => {
