@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { toEvento } from  './eventModel';
+import { INITIAL_EVENTO, toEvento } from  './eventModel';
 
 const dto = {
     id: 7,
@@ -42,4 +42,22 @@ describe('toEvento' , () => {
       nombreRecinto: 'Parc del Forum',
     });
   });
+});
+
+describe('INITIAL_EVENTO', () =>{
+  it('Initial object values are defined but empty', () =>{
+    const evento = INITIAL_EVENTO;
+    expect(evento).toMatchObject({
+      nombre: '',
+      descripcion: '',
+      fechaEvento: '',
+      horaEvento: '',
+      precioMinimo: '',
+      precioMaximo: '',
+      localidad: '',
+      genero: '',
+      nombreRecinto: '',
+      imagenUrl: ''
+    });
+  })
 });
