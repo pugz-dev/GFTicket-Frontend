@@ -4,6 +4,11 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { EventModel } from '../../models/event.model';
 import { EventService } from '../../services/event.service';
 
+const MESES = [
+  'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+  'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
+];
+
 @Component({
   selector: 'app-event-detail',
   standalone: true,
@@ -17,6 +22,7 @@ export class EventDetail implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
 
   event: EventModel | null = null;
+  fechaLarga = '';
   loading = true;
   error = false;
 
@@ -26,6 +32,7 @@ export class EventDetail implements OnInit {
     this.eventService.getEventById(id).subscribe({
       next: (event) => {
         this.event = event;
+        this.fechaLarga = this.formatFechaLarga(event.fechaEvento);
         this.loading = false;
         this.error = false;
         this.cdr.markForCheck();
@@ -37,5 +44,10 @@ export class EventDetail implements OnInit {
         this.cdr.markForCheck();
       },
     });
+  }
+
+  private formatFechaLarga(fechaEvento: string): string {
+    const d = new Date(fechaEvento);
+    return `${d.getDate()} de ${MESES[d.getMonth()]} ${d.getFullYear()}`;
   }
 }
