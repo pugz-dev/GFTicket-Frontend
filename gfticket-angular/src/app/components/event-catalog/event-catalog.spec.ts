@@ -4,6 +4,8 @@ import { provideRouter } from '@angular/router';
 import { EventCatalog } from './event-catalog';
 import { EventModel } from '../../models/event.model';
 
+const MONTH_ABBRS = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+
 describe('EventCatalog', () => {
   let component: EventCatalog;
   let fixture: ComponentFixture<EventCatalog>;
@@ -59,8 +61,10 @@ describe('EventCatalog', () => {
     const images = compiled.querySelectorAll('img');
 
     for (const [i, event] of mockEvents.entries()) {
+      const eventDate = new Date(event.fechaEvento);
       expect(compiled.textContent).toContain(event.nombre);
-      expect(compiled.textContent).toContain(event.fechaEvento);
+      expect(compiled.textContent).toContain(`${eventDate.getDate()}`);
+      expect(compiled.textContent).toContain(MONTH_ABBRS[eventDate.getMonth()]);
       expect(compiled.textContent).toContain(event.localidad);
       expect(compiled.textContent).toContain(event.genero);
 

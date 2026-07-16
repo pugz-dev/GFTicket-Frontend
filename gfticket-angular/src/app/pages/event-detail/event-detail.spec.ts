@@ -88,9 +88,16 @@ describe('EventDetail', () => {
     createComponent();
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
+    const meses = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
+    ];
+    const eventDate = new Date(mockEvent.fechaEvento);
+    const fechaLarga = `${eventDate.getDate()} de ${meses[eventDate.getMonth()]} ${eventDate.getFullYear()}`;
+
     expect(compiled.textContent).toContain(mockEvent.nombre);
     expect(compiled.textContent).toContain(mockEvent.descripcion);
-    expect(compiled.textContent).toContain(mockEvent.fechaEvento);
+    expect(compiled.textContent).toContain(fechaLarga);
     expect(compiled.textContent).toContain(mockEvent.horaEvento);
     expect(compiled.textContent).toContain(mockEvent.localidad);
     expect(compiled.textContent).toContain(mockEvent.genero);
