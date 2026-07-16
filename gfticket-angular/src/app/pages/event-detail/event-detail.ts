@@ -41,6 +41,7 @@ export class EventDetail implements OnInit {
         this.event = null;
         this.loading = false;
         this.error = true;
+        // Detecta un cambio en la funcionalidad para gestionar la posible excepción
         this.cdr.markForCheck();
       },
     });
