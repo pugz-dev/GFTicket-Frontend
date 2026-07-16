@@ -9,7 +9,8 @@ export const routes: Routes = [
 
     {
         path: 'eventos',
-        loadComponent: () => import('./components/event-list/event-list').then(m => m.EventList)
+        redirectTo: '/',
+        pathMatch: 'full'
     },
 
     {
