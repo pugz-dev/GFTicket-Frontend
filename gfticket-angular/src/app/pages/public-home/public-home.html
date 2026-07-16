@@ -3,18 +3,6 @@
   <p class="hero__subtitle">Descubre y reserva las entradas para tus próximos eventos favoritos.</p>
 </header>
 
-@if (loading) {
-  <div class="page">
-    <div class="skeleton skeleton--line skeleton--line-lg"></div>
-    <div class="skeleton skeleton--line skeleton--line-md"></div>
-    <div class="skeleton skeleton--line skeleton--line-sm"></div>
-  </div>
-} @else if (error) {
-  <div class="page state state--error">
-    <p class="state__message">No se han podido cargar los eventos.</p>
-  </div>
-} @else {
-  <div class="page">
-    <app-event-catalog [events]="events" />
-  </div>
-}
+<div class="page">
+  <app-event-list />
+</div>
