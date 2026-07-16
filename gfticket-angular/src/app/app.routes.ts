@@ -9,7 +9,7 @@ export const routes: Routes = [
 
     {
         path: 'eventos',
-        loadComponent: () => import('./pages/event-list/event-list').then(m => m.EventList)
+        loadComponent: () => import('./components/event-list/event-list').then(m => m.EventList)
     },
 
     {
