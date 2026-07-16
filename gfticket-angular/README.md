@@ -52,23 +52,23 @@ Output is in `dist/gfticket-angular/`. Optimized and minified for production.
 src/
 ├── app/
 │   ├── components/
-│   │   └── event-catalog/
-│   │       ├── event-catalog.ts           # Component definition
-│   │       ├── event-catalog.html         # Template (grid of event cards)
-│   │       ├── event-catalog.css          # Card styling
-│   │       └── event-catalog.spec.ts      # Tests
+│   │   ├── event-catalog/
+│   │   │   ├── event-catalog.ts           # Component definition
+│   │   │   ├── event-catalog.html         # Template (grid of event cards)
+│   │   │   ├── event-catalog.css          # Card styling
+│   │   │   └── event-catalog.spec.ts      # Tests
+│   │   └── event-list/                    # Loads events + renders event-catalog
+│   │       ├── event-list.ts              # Owns loading/error state, fetches from EventService
+│   │       ├── event-list.html
+│   │       ├── event-list.css             # Hero heading + skeleton states
+│   │       └── event-list.spec.ts
 │   ├── pages/
-│   │   ├── event-list/                    # Event listing page (container)
-│   │   │   ├── event-list.ts
-│   │   │   ├── event-list.html
-│   │   │   ├── event-list.css             # Page layout + skeleton states
-│   │   │   └── event-list.spec.ts
 │   │   ├── event-detail/                  # Event detail page
 │   │   │   ├── event-detail.ts
 │   │   │   ├── event-detail.html
 │   │   │   ├── event-detail.css
 │   │   │   └── event-detail.spec.ts
-│   │   └── public-home/                   # Landing page (future)
+│   │   └── public-home/                   # Landing page ("/"), renders <app-event-list />
 │   ├── services/
 │   │   └── event.service.ts               # API calls for events
 │   │       └── event.service.spec.ts      # Service tests
@@ -138,17 +138,21 @@ export class EventList implements OnInit {
 }
 ```
 
+`EventList` is a **component**, not a page — it owns all the loading/error/fetch logic and renders `<app-event-catalog>` internally. `PublicHome` just renders `<app-event-list />` with no inputs; it doesn't know or care how events are fetched.
+
 ### Routing
 
-Routes are defined in `app.routes.ts` and lazy-loaded where applicable:
+Routes are defined in `app.routes.ts`. There is no dedicated route for the event listing — it lives inside the home page as a component:
 
 ```typescript
 export const routes: Routes = [
   { path: '', loadComponent: () => import('./pages/public-home/public-home').then(m => m.PublicHome) },
-  { path: 'eventos', loadComponent: () => import('./pages/event-list/event-list').then(m => m.EventList) },
+  { path: 'eventos', redirectTo: '/', pathMatch: 'full' },
   { path: 'eventos/:id', loadComponent: () => import('./pages/event-detail/event-detail').then(m => m.EventDetail) },
 ];
 ```
+
+`/eventos` redirects to `/` for backward compatibility (old links, bookmarks) — the actual event listing renders on the home page via `PublicHome → EventList → EventCatalog`.
 
 ### Styling & Design System
 
@@ -244,7 +248,7 @@ The app consumes a **backend REST API** (maintained by a separate team). No mock
 ### Endpoints Used
 
 ```
-GET /eventos           → EventList page, EventCatalog component
+GET /eventos           → EventList component (rendered inside PublicHome), EventCatalog component
 GET /eventos/:id       → EventDetail page
 POST /usuarios         → User registration (Sprint 2+)
 POST /compras          → Simulate ticket purchase (Sprint 2+)

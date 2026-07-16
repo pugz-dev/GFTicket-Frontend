@@ -20,8 +20,8 @@ GFTicket-Frontend/
 ├── gfticket-angular/          # Angular 22 app (public web)
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── components/    # Reusable components (event-catalog, etc.)
-│   │   │   ├── pages/         # Route-level pages (event-list, event-detail)
+│   │   │   ├── components/    # Reusable components (event-catalog, event-list, etc.)
+│   │   │   ├── pages/         # Route-level pages (public-home, event-detail)
 │   │   │   ├── services/      # Business logic (event-service)
 │   │   │   ├── models/        # TypeScript interfaces
 │   │   │   ├── app.routes.ts  # Application routing

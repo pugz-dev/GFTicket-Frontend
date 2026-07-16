@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 
-import { EventCatalog } from '../../components/event-catalog/event-catalog';
+import { EventCatalog } from '../event-catalog/event-catalog';
 import { EventModel } from '../../models/event.model';
 import { EventService } from '../../services/event.service';
 
