@@ -1,21 +1,33 @@
 @if (loading) {
   <div class="page">
-    <div class="skeleton skeleton--image"></div>
-    <div class="skeleton skeleton--line skeleton--line-lg"></div>
-    <div class="skeleton skeleton--line skeleton--line-md"></div>
-    <div class="skeleton skeleton--line skeleton--line-sm"></div>
+    <div class="skeleton skeleton-back"></div>
+    <div class="skeleton-layout">
+      <div class="skeleton skeleton-media"></div>
+      <div class="skeleton-col">
+        <div class="skeleton skeleton-genre"></div>
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-meta"></div>
+        <div class="skeleton skeleton-description"></div>
+        <div class="skeleton skeleton-price-row"></div>
+      </div>
+    </div>
   </div>
 } @else if (error) {
   <div class="page state state--error">
     <p class="state__message">Event not found.</p>
-    <a class="back-link" routerLink="/eventos">← Volver a eventos</a>
+    <a class="back-link" routerLink="/eventos"><span class="back-link__icon">←</span> Volver a eventos</a>
   </div>
 } @else if (event) {
   <article class="page event-detail">
-    <a class="back-link" routerLink="/eventos">← Volver a eventos</a>
+    <a class="back-link" routerLink="/eventos"><span class="back-link__icon">←</span> Volver a eventos</a>
 
     <div class="event-detail__layout">
-      <img class="event-detail__image" [src]="event.imagenUrl" [alt]="event.nombre" />
+      <div class="event-detail__media">
+        <div class="event-detail__placeholder">FOTO · {{ event.nombre }}</div>
+        @if (event.imagenUrl) {
+          <img class="event-detail__image" [src]="event.imagenUrl" [alt]="event.nombre" (error)="$event.target.style.display='none'" />
+        }
+      </div>
 
       <div class="event-detail__body">
         <span class="event-detail__genre">{{ event.genero }}</span>
@@ -24,7 +36,7 @@
         <dl class="event-detail__meta">
           <div class="event-detail__meta-item">
             <dt>Fecha</dt>
-            <dd>{{ event.fechaEvento }}</dd>
+            <dd>{{ fechaLarga }}</dd>
           </div>
           <div class="event-detail__meta-item">
             <dt>Hora</dt>
@@ -40,9 +52,12 @@
           </div>
         </dl>
 
-        <div class="event-detail__price">
-          <span class="event-detail__price-label">Precio</span>
-          <span class="event-detail__price-value">{{ event.precioMinimo }}€ – {{ event.precioMaximo }}€</span>
+        <div class="event-detail__price-row">
+          <div>
+            <span class="event-detail__price-label">Precio</span>
+            <span class="event-detail__price-value">{{ event.precioMinimo }} € – {{ event.precioMaximo }} €</span>
+          </div>
+          <a class="event-detail__buy">Comprar entradas</a>
         </div>
 
         <p class="event-detail__description">{{ event.descripcion }}</p>

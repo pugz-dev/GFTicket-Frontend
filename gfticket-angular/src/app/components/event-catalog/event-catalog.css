@@ -1,100 +1,112 @@
+/* Drop-in replacement for src/app/components/event-catalog/event-catalog.css
+   Update event-catalog.html to match the new markup (date badge, genre pill, image-fallback div) — see notes at bottom. */
+
 :host {
-  --color-primary: #4338ca;
-  --color-primary-bg: #eef2ff;
-  --color-text: #111827;
-  --color-text-muted: #6b7280;
-  --color-border: #e5e7eb;
-  --radius: 12px;
+  --color-bg: oklch(0.16 0.015 280);
+  --color-surface: oklch(0.21 0.02 280);
+  --color-border: oklch(0.32 0.02 280);
+  --color-text: oklch(0.97 0.005 280);
+  --color-text-muted: oklch(0.68 0.02 280);
+  --color-accent: oklch(0.72 0.22 350);
+  --color-accent-2: oklch(0.88 0.19 128);
+  --radius: 20px;
 
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.25rem;
-}
-
-@media (min-width: 640px) {
-  :host {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  :host {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 28px;
 }
 
 .event-card {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #fff;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-  color: inherit;
   text-decoration: none;
+  color: inherit;
+  font-family: 'Manrope', sans-serif;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .event-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.08);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 44px oklch(0 0 0 / 0.4);
+  border-color: oklch(0.70 0.24 350 / 0.55);
+}
+
+.event-card__media { position: relative; aspect-ratio: 4 / 3; }
+
+.event-card__placeholder {
+  width: 100%; height: 100%;
+  background: repeating-linear-gradient(135deg, oklch(0.26 0.02 280), oklch(0.26 0.02 280) 10px, oklch(0.235 0.02 280) 10px, oklch(0.235 0.02 280) 20px);
+  display: flex; align-items: center; justify-content: center;
+  font-family: monospace; font-size: 11px; color: oklch(0.55 0.02 280); letter-spacing: 0.04em;
 }
 
 .event-card__image {
-  width: 100%;
-  aspect-ratio: 16 / 10;
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
   object-fit: cover;
-  background: var(--color-primary-bg);
+  z-index: 1;
 }
 
-.event-card__body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  padding: 1rem;
+.event-card__scrim {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(180deg, oklch(0 0 0 / 0) 55%, oklch(0 0 0 / 0.55) 100%);
 }
+
+.event-card__date {
+  position: absolute; top: 14px; left: 14px; z-index: 2;
+  background: oklch(0.97 0.005 280); color: var(--color-bg);
+  border-radius: 12px; padding: 8px 10px; text-align: center;
+  font-family: 'Space Grotesk', sans-serif; line-height: 1; min-width: 52px;
+}
+.event-card__date-num { font-size: 20px; font-weight: 800; }
+.event-card__date-month { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
 
 .event-card__genre {
-  align-self: flex-start;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  background: var(--color-primary-bg);
-  color: var(--color-primary);
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  position: absolute; top: 14px; right: 14px; z-index: 2;
+  background: var(--color-accent-2); color: oklch(0.22 0.06 128);
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 11px;
+  letter-spacing: 0.05em; text-transform: uppercase; padding: 6px 10px; border-radius: 999px;
 }
+
+.event-card__body { padding: 20px 20px 24px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
 
 .event-card__title {
-  margin: 0.6rem 0 0.75rem;
-  font-size: 1.1rem;
-  line-height: 1.3;
-  color: var(--color-text);
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 22px; line-height: 1.25;
+  margin: 0 0 12px; color: var(--color-text);
 }
 
-.event-card__meta {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
-  margin: auto 0 0;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--color-border);
+.event-card__footer {
+  display: flex; flex-direction: column; gap: 4px;
+  margin-top: auto; padding-top: 14px; border-top: 1px solid var(--color-border);
 }
+.event-card__venue { font-size: 13px; color: var(--color-text-muted); }
+.event-card__price { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: var(--color-accent); }
 
-.event-card__meta-item dt {
-  font-size: 0.7rem;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.event-card__meta-item dd {
-  margin: 0.15rem 0 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--color-text);
-}
+/* Markup this CSS expects (adjust event-catalog.html):
+<a class="event-card" [routerLink]="['/eventos', event.id]">
+  <div class="event-card__media">
+    <div class="event-card__placeholder">FOTO · {{ event.nombre }}</div>
+    @if (event.imagenUrl) {
+      <img class="event-card__image" [src]="event.imagenUrl" [alt]="event.nombre" (error)="onImgError($event)" />
+    }
+    <div class="event-card__scrim"></div>
+    <div class="event-card__date">
+      <div class="event-card__date-num">{{ dayNum(event) }}</div>
+      <div class="event-card__date-month">{{ monthAbbr(event) }}</div>
+    </div>
+    <span class="event-card__genre">{{ event.genero }}</span>
+  </div>
+  <div class="event-card__body">
+    <h2 class="event-card__title">{{ event.nombre }}</h2>
+    <div class="event-card__footer">
+      <span class="event-card__venue">{{ event.nombreRecinto }} · {{ event.localidad }}</span>
+      <span class="event-card__price">Desde {{ event.precioMinimo }} €</span>
+    </div>
+  </div>
+</a>
+onImgError(e: Event) { (e.target as HTMLImageElement).style.display = 'none'; }
+*/

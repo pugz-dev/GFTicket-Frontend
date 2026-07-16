@@ -1,8 +1,23 @@
 @if (loading) {
   <div class="page">
-    <div class="skeleton skeleton--line skeleton--line-lg"></div>
-    <div class="skeleton skeleton--line skeleton--line-md"></div>
-    <div class="skeleton skeleton--line skeleton--line-sm"></div>
+    <div class="hero">
+      <div class="skeleton skeleton-hero__label"></div>
+      <div class="skeleton skeleton-hero__title"></div>
+    </div>
+    <div class="skeleton-grid">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="skeleton-card">
+          <div class="skeleton skeleton-card__media"></div>
+          <div class="skeleton-card__body">
+            <div class="skeleton skeleton-card__title"></div>
+            <div class="skeleton-card__footer">
+              <div class="skeleton skeleton-card__venue"></div>
+              <div class="skeleton skeleton-card__price"></div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
   </div>
 } @else if (error) {
   <div class="page state state--error">
@@ -10,6 +25,10 @@
   </div>
 } @else {
   <div class="page">
+    <div class="hero">
+      <span class="hero__label">En directo</span>
+      <h1 class="hero__title">Próximos conciertos<br />y eventos en vivo</h1>
+    </div>
     <app-event-catalog [events]="events" />
   </div>
 }
