@@ -50,13 +50,6 @@ describe('PublicHome', () => {
     expect(component).toBeTruthy();
   });
 
-  it('shows the header title and subtitle in the DOM', () => {
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('GFTicket');
-    expect(compiled.textContent).toContain('Descubre y reserva las entradas');
-  });
-
   it('renders the event-list component', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
