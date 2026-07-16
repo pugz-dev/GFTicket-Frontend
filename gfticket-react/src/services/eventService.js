@@ -19,22 +19,12 @@ export const createEvent = async (event) =>{
     return toEvento(await handleResponse(response));
 }
 
-/*
-Added in previous commit by mistake
-export const getEventos = async () =>{
+export const getEvents = async () =>{
     const response = await fetch(API_URL);
-    if (!response.ok) {
-        throw new Error(`Error ${response.status}`);
-    }
-    return await response.json();
+    return (await handleResponse(response) ?? []).map(toEvento);
 }
 
-export const getEventoById = async (id) =>{
+export const getEventById = async (id) =>{
     const response = await fetch(`${API_URL}/${id}`);
-    if (!response.ok) {
-        throw new Error(`Error ${response.status}`);
-    }
-    return await response.json();
+    return toEvento(await handleResponse(response));
 }
-
- */
