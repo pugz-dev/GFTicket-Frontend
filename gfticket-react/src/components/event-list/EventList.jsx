@@ -54,6 +54,7 @@ export function EventList() {
                                     <th>Localidad</th>
                                     <th>Género</th>
                                     <th>Recinto</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -70,6 +71,17 @@ export function EventList() {
                                         <td>{evento.localidad}</td>
                                         <td><span className="event-list__genre">{evento.genero}</span></td>
                                         <td>{evento.nombreRecinto}</td>
+                                        <td>
+                                            {/*A button inside a Link is invalid HTML: the Link itself is the button.
+                                               The pencil is decorative, aria-label carries the meaning*/}
+                                            <Link
+                                                className="event-list__edit"
+                                                to={`/eventos/edit/${evento.id}`}
+                                                aria-label={`Editar ${evento.nombre}`}>
+                                                ✏️
+                                            </Link>
+                                        </td>
+                                        
                                         {/*
                                         <td>
                                             <button onClick={() => handleDelete(evento.id)}>🗑️</button>
