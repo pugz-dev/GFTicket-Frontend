@@ -162,8 +162,10 @@ export const EventForm = () => {
             )}
             {!loading && !error && evento && (
             <form className="event-form" onSubmit={handleSubmit}>
-                <h2 className="event-form__title">Crear Evento</h2>
-                <p className="event-form__subtitle">Introduce la información del evento</p>
+                <h2 className="event-form__title">{id ? 'Editar Evento' : 'Crear Evento'}</h2>
+                <p className="event-form__subtitle">
+                    {id ? 'Modifica la información del evento' : 'Introduce la información del evento'}
+                </p>
                 <div className="event-form__grid">
                     <div className={fieldClass('nombre', true)}>
                         <label htmlFor="nombre">Nombre: </label>
@@ -277,27 +279,17 @@ export const EventForm = () => {
                 </div>
                 <div className="event-form__actions">
                     <button className="event-form__submit" type="submit" disabled={isFormInvalid}>
-                        Registrar evento
+                        {id ? 'Actualizar evento' : 'Registrar evento'}
                     </button>
                     {/*role="status" (polite live region), not "alert": success is not urgent*/}
-                    {submitStatus === 'success' && !id && (
+                    {submitStatus === 'success' && (
                         <div className="alert alert-success" role="status">
-                            Evento creado correctamente.
+                            Evento {id ? 'actualizado' : 'creado'} correctamente.
                         </div>
                     )}
-                    {submitStatus === 'success' && id && (
-                        <div className="alert alert-success" role="status">
-                            Evento actualizado correctamente.
-                        </div>
-                    )}
-                    {submitStatus === 'error' && !id && (
+                    {submitStatus === 'error' && (
                         <div className="alert alert-danger" role="alert">
-                            No se pudo crear el evento. Inténtalo de nuevo.
-                        </div>
-                    )}
-                    {submitStatus === 'error' && id && (
-                        <div className="alert alert-danger" role="alert">
-                            No se pudo actualizar el evento. Inténtalo de nuevo.
+                            No se pudo {id ? 'actualizar' : 'crear'} el evento. Inténtalo de nuevo.
                         </div>
                     )}
                 </div>
