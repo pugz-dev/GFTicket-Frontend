@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { EventCatalog } from '../event-catalog/event-catalog';
 import { EventModel } from '../../models/event.model';
@@ -7,7 +8,7 @@ import { EventService } from '../../services/event.service';
 @Component({
   selector: 'app-event-list',
   standalone: true,
-  imports: [EventCatalog],
+  imports: [EventCatalog, RouterLink],
   templateUrl: './event-list.html',
   styleUrl: './event-list.css',
 })
