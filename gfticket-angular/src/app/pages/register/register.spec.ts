@@ -39,6 +39,13 @@ describe('Register', () => {
     expect(component).toBeTruthy();
   });
 
+  it('links to the login page for users who already have an account', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const loginLink = compiled.querySelector('a[href="/login"]');
+
+    expect(loginLink).toBeTruthy();
+  });
+
   describe('validations', () => {
     it('marks nombre as required', () => {
       component.form.controls.nombre.setValue('');
