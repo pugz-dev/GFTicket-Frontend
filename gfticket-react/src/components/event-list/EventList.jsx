@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getEvents } from '../../services/eventService';
+import { getEvents, deleteEventById } from '../../services/eventService';
 import './EventList.css';
 
 
@@ -10,6 +10,10 @@ export function EventList() {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    //Deleting can fail independently of loading; each failure gets its own message
+    const [deleteError, setDeleteError] = useState(false);
+    //Id of the event whose delete awaits inline confirmation (null: none).
+    const [confirmingId, setConfirmingId] = useState(null);
 
     const fetchEvents = async () => {
         try {
@@ -32,6 +36,20 @@ export function EventList() {
         return () => clearTimeout(timer);
 
     }, []);
+
+    //Runs only after the inline confirmation: by here the user already said yes
+    const handleDelete = async (id) => {
+        setConfirmingId(null);
+        setDeleteError(false);
+        try {
+            await deleteEventById(id);
+            //Drop the row locally instead of refecthing the whole list
+            setEvents(prev => prev.filter(evento => evento.id !== id));
+        } catch (err) {
+            console.error(err);
+            setDeleteError(true);
+        }
+    }
 
     return (
         <section className="event-list">
@@ -71,22 +89,43 @@ export function EventList() {
                                         <td>{evento.localidad}</td>
                                         <td><span className="event-list__genre">{evento.genero}</span></td>
                                         <td>{evento.nombreRecinto}</td>
+                                        {/*One cell for the whole Acciones column: td count must match th count*/}
                                         <td>
-                                            {/*A button inside a Link is invalid HTML: the Link itself is the button.
-                                               The pencil is decorative, aria-label carries the meaning*/}
-                                            <Link
-                                                className="event-list__edit"
-                                                to={`/eventos/edit/${evento.id}`}
-                                                aria-label={`Editar ${evento.nombre}`}>
-                                                ✏️
-                                            </Link>
+                                            {confirmingId === evento.id ? (
+                                                //Inline confirmation replaces the row actions until answered
+                                                <div className="event-list__actions">
+                                                    <span className="event-list__confirm-label">¿Eliminar?</span>
+                                                    <button
+                                                        className="event-list__confirm-yes"
+                                                        aria-label={`Confirmar eliminación de ${evento.nombre}`}
+                                                        onClick={() => handleDelete(evento.id)}>
+                                                        Sí
+                                                    </button>
+                                                    <button
+                                                        className="event-list__confirm-no"
+                                                        aria-label={`Cancelar eliminación de ${evento.nombre}`}
+                                                        onClick={() => setConfirmingId(null)}>
+                                                        No
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="event-list__actions">
+                                                    <Link
+                                                        className="event-list__edit"
+                                                        to={`/eventos/edit/${evento.id}`}
+                                                        aria-label={`Editar ${evento.nombre}`}>
+                                                        ✏️
+                                                    </Link>
+                                                    <button
+                                                        className="event-list__delete"
+                                                        aria-label={`Eliminar ${evento.nombre}`}
+                                                        onClick={() => setConfirmingId(evento.id)}>
+                                                        🗑️
+                                                    </button>
+                                                </div>
+                                            )}
                                         </td>
-                                        
-                                        {/*
-                                        <td>
-                                            <button onClick={() => handleDelete(evento.id)}>🗑️</button>
-                                        </td>
-                                        */}
+                                    {deleteError && <div className="alert alert-danger" role="alert">No se pudo eliminar el evento.</div>}
                                     </tr>
                                 ))}
                             </tbody>
