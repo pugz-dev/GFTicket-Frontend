@@ -61,4 +61,31 @@ describe('UserStorageService', () => {
 
     expect(result.id).toBe(6);
   });
+
+  describe('sembrarUsuariosPrueba', () => {
+    it('seeds test users when localStorage has never been initialized', () => {
+      service.sembrarUsuariosPrueba();
+
+      const stored = JSON.parse(localStorage.getItem('usuarios') ?? '[]');
+      expect(stored.length).toBeGreaterThan(0);
+    });
+
+    it('does not overwrite existing users on subsequent app starts', () => {
+      service.registrarUsuario(nuevoUsuario);
+
+      service.sembrarUsuariosPrueba();
+
+      const stored = JSON.parse(localStorage.getItem('usuarios') ?? '[]');
+      expect(stored).toEqual([{ ...nuevoUsuario, id: 1 }]);
+    });
+
+    it('does not reseed once the users list has been emptied', () => {
+      localStorage.setItem('usuarios', JSON.stringify([]));
+
+      service.sembrarUsuariosPrueba();
+
+      const stored = JSON.parse(localStorage.getItem('usuarios') ?? '[]');
+      expect(stored).toEqual([]);
+    });
+  });
 });
