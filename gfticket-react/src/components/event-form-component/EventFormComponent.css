@@ -20,13 +20,6 @@
   color: var(--color-text-muted);
 }
 
-.event-detail__status {
-  margin: 0;
-  padding: 2rem 0;
-  text-align: center;
-  color: var(--color-text-muted);
-}
-
 /* One column on mobile, two on desktop; --full fields span the row */
 .event-form__grid {
   display: grid;
@@ -58,6 +51,14 @@
   color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.03em;
+}
+
+/* Loading message while the event to edit is fetched */
+.event-form__status {
+  margin: 0;
+  padding: 2rem 0;
+  text-align: center;
+  color: var(--color-text-muted);
 }
 
 /* Red asterisk on mandatory fields; pseudo-element, so label text (and tests) stay untouched */
