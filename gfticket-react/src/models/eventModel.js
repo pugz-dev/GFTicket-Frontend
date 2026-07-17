@@ -26,16 +26,16 @@ function toHoraEvento(hora) {
 export function toEvento(dto) {
   return {
     id: dto.id,
-    nombre: dto.nombre,
-    descripcion: dto.descripcion,
-    fechaEvento: dto.fechaEvento,
-    horaEvento: toHoraEvento(dto.horaEvento),
-    precioMinimo: dto.precioMinimo,
-    precioMaximo: dto.precioMaximo,
-    localidad: dto.localidad,
-    genero: dto.genero,
-    nombreRecinto: dto.nombreRecinto,
-    imagenUrl: dto.imagenUrl,
+    nombre: dto.nombre?? '',
+    descripcion: dto.descripcion?? '',
+    fechaEvento: dto.fechaEvento?? '',
+    horaEvento: toHoraEvento(dto.horaEvento?? ''),
+    precioMinimo: dto.precioMinimo?? '',
+    precioMaximo: dto.precioMaximo?? '',
+    localidad: dto.localidad?? '',
+    genero: dto.genero?? '',
+    nombreRecinto: dto.nombreRecinto?? '',
+    imagenUrl: dto.imagenUrl?? '',
   };
 }
 

@@ -16,8 +16,10 @@ const dto = {
 };
 
 describe('toEvento' , () => {
-    it('Empty dto returns empty object', () =>{
-        expect(toEvento({})).toEqual({horaEvento : ''});
+    it('Empty dto defaults every field to the empty-form values', () =>{
+        //Null-safe mapping: a partial/junk DTO must never leak null into the
+        //components (the form calls .trim() on several fields)
+        expect(toEvento({})).toEqual(INITIAL_EVENTO);
     });
   it('Simplifies horaEvento to an HH:mm string', () => {
     expect(toEvento(dto).horaEvento).toBe('21:30');
