@@ -53,6 +53,12 @@
   letter-spacing: 0.03em;
 }
 
+/* Red asterisk on mandatory fields; pseudo-element, so label text (and tests) stay untouched */
+.event-form__field--required label::after {
+  content: " *";
+  color: var(--color-error);
+}
+
 .event-form__field input {
   width: 100%;
   padding: 0.55rem 0.75rem;
