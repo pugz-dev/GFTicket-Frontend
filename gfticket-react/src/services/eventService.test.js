@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach} from 'vitest';
-import { getEvents, getEventById, createEvent } from './eventService';
+import { getEvents, getEventById, createEvent, updateEventById } from './eventService';
 import { toEvento } from '../models/eventModel';
 
 const API_URL = 'http://teacherbanking.us-east-1.elasticbeanstalk.com/eventos';
@@ -149,4 +149,38 @@ describe('createEvent',() =>{
     });
 
     
+});
+
+describe('updateEventById', () => {
+    it('PUTs the event as JSON to its URL and returns the updated entity mapped', async () => {
+        const payload = { ...newEvent, nombre: 'Jazz Night (sala grande)' };
+        //The API echoes the updated entity back, horaEvento as a LocalTime object
+        const updatedDto = { id: 42, ...payload, horaEvento: { hour: 21, minute: 0, second: 0, nano: 0 } };
+        fetch.mockResolvedValue(jsonResponse(updatedDto));
+
+        const result = await updateEventById(42, payload);
+
+        expect(fetch).toHaveBeenCalledWith(`${API_URL}/42`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+        expect(result).toEqual(expect.objectContaining({
+            id: 42,
+            nombre: 'Jazz Night (sala grande)',
+            horaEvento: '21:00',
+        }));
+    });
+
+    it('rejects with the status code when the event does not exist (404)', async () => {
+        fetch.mockResolvedValue(jsonResponse({ message: 'Evento no encontrado' }, 404));
+
+        await expect(updateEventById(999, newEvent)).rejects.toThrow('Error 404');
+    });
+
+    it('rejects with the status code when validation fails (400)', async () => {
+        fetch.mockResolvedValue(jsonResponse({ message: 'nombre es obligatorio' }, 400));
+
+        await expect(updateEventById(42, { ...newEvent, nombre: '' })).rejects.toThrow('Error 400');
+    });
 });
