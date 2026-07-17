@@ -86,6 +86,26 @@
   text-decoration: underline;
 }
 
+/* Compact icon button for row actions (edit, later delete) */
+.event-list__edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  text-decoration: none;
+  font-size: 0.9rem;
+  line-height: 1;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.event-list__edit:hover {
+  background: var(--color-primary-bg);
+  border-color: var(--color-primary);
+}
+
 /* Genre pill, borrowed from the Angular event cards */
 .event-list__genre {
   display: inline-block;

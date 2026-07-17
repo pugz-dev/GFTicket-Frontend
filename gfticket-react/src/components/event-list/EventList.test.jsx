@@ -86,6 +86,14 @@ describe('EventList', () => {
         expect(link).toHaveAttribute('href', '/eventos/1');
     });
 
+    it('offers an accessible edit link per row', async () => {
+        renderList();
+
+        //The pencil is decorative; the accessible name says what it edits
+        const editLink = await screen.findByRole('link', { name: 'Editar Jazz Night' });
+        expect(editLink).toHaveAttribute('href', '/eventos/edit/1');
+    });
+
     it('renders the price range, keeping 0 as a real price (free events)', async () => {
         renderList();
 
