@@ -56,6 +56,8 @@ export const EventForm = () => {
             setEvento(INITIAL_EVENTO);
             setTouched({});
             setLoading(false);
+            setSubmitStatus(null);
+            setError(null);
         }
     }, [id]); //navigating from /eventos/1 to /eventos/2 must refetch
 
@@ -141,9 +143,9 @@ export const EventForm = () => {
 
             setTouched({});
             setSubmitStatus('success');
-        } catch (error) {
+        } catch (err) {
             //Keep the values so the user can correct and resubmit
-            console.error(error);
+            console.error(err);
             setSubmitStatus('error');
         }
     };
@@ -277,14 +279,24 @@ export const EventForm = () => {
                         Registrar evento
                     </button>
                     {/*role="status" (polite live region), not "alert": success is not urgent*/}
-                    {submitStatus === 'success' && (
+                    {submitStatus === 'success' && !id && (
                         <div className="alert alert-success" role="status">
                             Evento creado correctamente.
                         </div>
                     )}
-                    {submitStatus === 'error' && (
+                    {submitStatus === 'success' && id && (
+                        <div className="alert alert-success" role="status">
+                            Evento actualizado correctamente.
+                        </div>
+                    )}
+                    {submitStatus === 'error' && !id && (
                         <div className="alert alert-danger" role="alert">
                             No se pudo crear el evento. Inténtalo de nuevo.
+                        </div>
+                    )}
+                    {submitStatus === 'error' && id && (
+                        <div className="alert alert-danger" role="alert">
+                            No se pudo actualizar el evento. Inténtalo de nuevo.
                         </div>
                     )}
                 </div>
