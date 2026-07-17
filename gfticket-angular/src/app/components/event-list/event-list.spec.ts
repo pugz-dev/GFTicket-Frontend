@@ -43,6 +43,7 @@ describe('EventList', () => {
   beforeEach(async () => {
     eventServiceSpy = {
       getEventos: jest.fn(),
+      getEventosByName: jest.fn(),
     } as unknown as jest.Mocked<EventService>;
 
     await TestBed.configureTestingModule({
@@ -115,5 +116,72 @@ describe('EventList', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent?.toLowerCase()).toContain('error');
+  });
+
+  it('calls getEventosByName with the typed text when the user types in the search input', () => {
+    eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
+    eventServiceSpy.getEventosByName.mockReturnValue(of(mockEvents));
+    createComponent();
+    fixture.detectChanges();
+
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search');
+    input.value = 'Concert';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(eventServiceSpy.getEventosByName).toHaveBeenCalledWith('Concert');
+  });
+
+  it('updates the displayed events with the search results', () => {
+    const filtered = [mockEvents[0]];
+    eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
+    eventServiceSpy.getEventosByName.mockReturnValue(of(filtered));
+    createComponent();
+    fixture.detectChanges();
+
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search');
+    input.value = 'Concert';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(component.events).toEqual(filtered);
+  });
+
+  it('shows all events again when the search input is cleared', () => {
+    const filtered = [mockEvents[0]];
+    eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
+    eventServiceSpy.getEventosByName
+      .mockReturnValueOnce(of(filtered))
+      .mockReturnValueOnce(of(mockEvents));
+    createComponent();
+    fixture.detectChanges();
+
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search');
+    input.value = 'Concert';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    input.value = '';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(component.events).toEqual(mockEvents);
+  });
+
+  it('sets the error state when the search request fails', () => {
+    eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
+    eventServiceSpy.getEventosByName.mockReturnValue(
+      throwError(() => ({ status: 500 })),
+    );
+    createComponent();
+    fixture.detectChanges();
+
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search');
+    input.value = 'Concert';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(component.error).toBe(true);
+    expect(component.events).toEqual([]);
   });
 });
