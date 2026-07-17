@@ -35,4 +35,21 @@ export class EventList implements OnInit {
       },
     });
   }
+
+  onSearchChange(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+
+    this.eventService.getEventosByName(value).subscribe({
+      next: (events) => {
+        this.events = events;
+        this.error = false;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.events = [];
+        this.error = true;
+        this.cdr.markForCheck();
+      },
+    });
+  }
 }
