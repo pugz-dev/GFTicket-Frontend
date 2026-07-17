@@ -28,6 +28,14 @@
     <div class="hero">
       <span class="hero__label">En directo</span>
       <h1 class="hero__title">Próximos conciertos<br />y eventos en vivo</h1>
+      <div class="event-list__search-wrapper">
+        <input
+          class="event-list__search"
+          type="text"
+          placeholder="Buscar por nombre..."
+          (input)="onSearchChange($event)"
+        />
+      </div>
     </div>
     <app-event-catalog [events]="events" />
   </div>
