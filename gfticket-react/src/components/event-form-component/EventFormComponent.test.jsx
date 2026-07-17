@@ -52,6 +52,24 @@ describe('EventForm', () => {
         expect(screen.getByRole('button', { name: 'Registrar evento' })).toBeInTheDocument();
     });
 
+    it('marks exactly the mandatory fields as required (asterisk via CSS)', () => {
+        render(<EventForm />);
+
+        //The red * is a ::after pseudo-element, invisible to jsdom; the contract
+        //the CSS hangs on is the modifier class on each mandatory field
+        const isRequired = (label) =>
+            screen.getByLabelText(label).closest('.event-form__field')
+                .classList.contains('event-form__field--required');
+
+        ['Nombre:', 'Fecha:', 'Hora:', 'Precio mínimo:', 'Precio máximo:',
+         'Localidad:', 'Nombre del recinto:'].forEach((label) =>
+            expect(isRequired(label), `${label} should be marked required`).toBe(true)
+        );
+        ['Descripcion:', 'Género:', 'URL de la imagen:'].forEach((label) =>
+            expect(isRequired(label), `${label} should NOT be marked required`).toBe(false)
+        );
+    });
+
     it('reflects typed text back into the input (controlled component wiring)', () => {
         render(<EventForm />);
 
