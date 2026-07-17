@@ -5,7 +5,7 @@
 }
 
 .admin-header h1 {
-  max-width: 960px;
+  max-width: 1140px;
   margin: 0 auto;
   font-size: 1.25rem;
   letter-spacing: 0.02em;
@@ -15,7 +15,7 @@
 .admin-nav {
   display: flex;
   gap: 0.5rem;
-  max-width: 960px;
+  max-width: 1140px;
   margin: 0.75rem auto 0;
   padding-bottom: 0.75rem;
 }
@@ -35,8 +35,9 @@
   background: var(--color-primary-bg);
 }
 
+/* 1140px: wide enough for the 7-column event table without mid-value wrapping */
 .admin-main {
-  max-width: 960px;
+  max-width: 1140px;
   margin: 0 auto;
   padding: 1.5rem 1rem 3rem;
 }

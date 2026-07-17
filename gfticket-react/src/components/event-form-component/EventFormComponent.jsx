@@ -81,6 +81,13 @@ export const EventForm = () => {
 
     const isFormInvalid = Object.keys(validators).some(isFieldInvalid);
 
+    //A field is mandatory if it has a validators entry: that presence is static metadata,
+    //The --required modifier paints the red asterisk from CSS (label::after).
+    const fieldClass = (field, full = false) =>
+        'event-form__field'
+        + (full ? ' event-form__field--full' : '')
+        + (field in validators ? ' event-form__field--required' : '');
+
     const handleSubmit = async (e) => {
         //Prevent the browser's default full-page reload on submit
         e.preventDefault();
@@ -106,7 +113,7 @@ export const EventForm = () => {
             <h2 className="event-form__title">Crear Evento</h2>
             <p className="event-form__subtitle">Introduce la información del evento</p>
             <div className="event-form__grid">
-                <div className="event-form__field event-form__field--full">
+                <div className={fieldClass('nombre', true)}>
                     <label htmlFor="nombre">Nombre: </label>
                     <input
                         id="nombre"
@@ -117,7 +124,7 @@ export const EventForm = () => {
                         onBlur={handleBlur} />
                     <ValidatorAlert validators={validators} touched={touched} field="nombre" />
                 </div>
-                <div className="event-form__field event-form__field--full">
+                <div className={fieldClass('descripcion', true)}>
                     <label htmlFor="descripcion">Descripcion: </label>
                     <input
                         id="descripcion"
@@ -127,7 +134,7 @@ export const EventForm = () => {
                         onChange={handleChange}
                         onBlur={handleBlur} />
                 </div>
-                <div className="event-form__field">
+                <div className={fieldClass('fechaEvento')}>
                     <label htmlFor="fechaEvento">Fecha: </label>
                     <input
                         id="fechaEvento"
@@ -138,7 +145,7 @@ export const EventForm = () => {
                         onBlur={handleBlur} />
                     <ValidatorAlert validators={validators} touched={touched} field="fechaEvento" />
                 </div>
-                <div className="event-form__field">
+                <div className={fieldClass('horaEvento')}>
                     <label htmlFor="horaEvento">Hora: </label>
                     <input
                         id="horaEvento"
@@ -149,7 +156,7 @@ export const EventForm = () => {
                         onBlur={handleBlur} />
                     <ValidatorAlert validators={validators} touched={touched} field="horaEvento" />
                 </div>
-                <div className="event-form__field">
+                <div className={fieldClass('precioMinimo')}>
                     <label htmlFor="precioMinimo">Precio mínimo: </label>
                     <input
                         id="precioMinimo"
@@ -161,7 +168,7 @@ export const EventForm = () => {
                         onBlur={handleBlur} />
                     <ValidatorAlert validators={validators} touched={touched} field="precioMinimo" />
                 </div>
-                <div className="event-form__field">
+                <div className={fieldClass('precioMaximo')}>
                     <label htmlFor="precioMaximo">Precio máximo: </label>
                     <input
                         id="precioMaximo"
@@ -173,7 +180,7 @@ export const EventForm = () => {
                         onBlur={handleBlur} />
                     <ValidatorAlert validators={validators} touched={touched} field="precioMaximo" />
                 </div>
-                <div className="event-form__field">
+                <div className={fieldClass('localidad')}>
                     <label htmlFor="localidad">Localidad: </label>
                     <input
                         id="localidad"
@@ -184,7 +191,7 @@ export const EventForm = () => {
                         onBlur={handleBlur} />
                     <ValidatorAlert validators={validators} touched={touched} field="localidad" />
                 </div>
-                <div className="event-form__field">
+                <div className={fieldClass('genero')}>
                     <label htmlFor="genero">Género: </label>
                     <input
                         id="genero"
@@ -194,7 +201,7 @@ export const EventForm = () => {
                         onChange={handleChange}
                         onBlur={handleBlur} />
                 </div>
-                <div className="event-form__field event-form__field--full">
+                <div className={fieldClass('nombreRecinto', true)}>
                     <label htmlFor="nombreRecinto">Nombre del recinto: </label>
                     <input
                         id="nombreRecinto"
@@ -205,7 +212,7 @@ export const EventForm = () => {
                         onBlur={handleBlur} />
                     <ValidatorAlert validators={validators} touched={touched} field="nombreRecinto" />
                 </div>
-                <div className="event-form__field event-form__field--full">
+                <div className={fieldClass('imagenUrl', true)}>
                     <label htmlFor="imagenUrl">URL de la imagen: </label>
                     <input
                         id="imagenUrl"
