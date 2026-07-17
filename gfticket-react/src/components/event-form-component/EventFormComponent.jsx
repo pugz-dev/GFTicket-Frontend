@@ -28,7 +28,13 @@ export const EventForm = () => {
     const [loading, setLoading] = useState(!!id);
     //Error check containing error message
     const [error, setError] = useState(null);
-    
+
+    //Result of the last submit: 'success' | 'error' | null (nothing to report)
+    const [submitStatus, setSubmitStatus] = useState(null);
+
+    //Show validation errors only if field was touched
+    const [touched, setTouched] = useState({});
+
     useEffect(() => {
         //If in update mode, set field values to the existing event
         if(id){
@@ -61,9 +67,6 @@ export const EventForm = () => {
         }
     }, [id]); //navigating from /eventos/1 to /eventos/2 must refetch
 
-    //Result of the last submit: 'success' | 'error' | null (nothing to report)
-    const [submitStatus, setSubmitStatus] = useState(null);
-
     //Update form status
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -77,8 +80,6 @@ export const EventForm = () => {
         setSubmitStatus(null);
     };
 
-    //Show validation errors only if field was touched
-    const [touched, setTouched] = useState({});
     const handleBlur = (e) => {
         setTouched(prev => ({ ...prev, [e.target.name]: true }));
     };
@@ -136,7 +137,7 @@ export const EventForm = () => {
         if (isFormInvalid) return;
 
         try {
-            console.log(await id ? updateEventById(id, evento) : createEvent(evento));
+            console.log(await (id ? updateEventById(id, evento) : createEvent(evento)));
 
             //Only clear the form in create mode and once the backend has accepted the event
             if(!id)setEvento(INITIAL_EVENTO);
