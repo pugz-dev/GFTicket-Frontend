@@ -64,9 +64,9 @@ export function EventList() {
                                                 {evento.nombre}
                                             </Link>
                                         </td>
-                                        <td>{evento.fechaEvento}</td>
-                                        <td>{evento.horaEvento}</td>
-                                        <td>{evento.precioMinimo ?? 'N/A'}€ ~ {evento.precioMaximo ?? 'N/A'}€</td>
+                                        <td className="event-list__cell--nowrap">{evento.fechaEvento}</td>
+                                        <td className="event-list__cell--nowrap">{evento.horaEvento}</td>
+                                        <td className="event-list__cell--nowrap">{evento.precioMinimo ?? 'N/A'}€ ~ {evento.precioMaximo ?? 'N/A'}€</td>
                                         <td>{evento.localidad}</td>
                                         <td><span className="event-list__genre">{evento.genero}</span></td>
                                         <td>{evento.nombreRecinto}</td>
