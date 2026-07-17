@@ -87,6 +87,23 @@ describe('EventDetail', () => {
         expect(link).toHaveAttribute('href', '/eventos');
     });
 
+    it('offers a link to edit the event once it is loaded', async () => {
+        renderDetail();
+
+        const editLink = await screen.findByRole('link', { name: /Editar/ });
+        expect(editLink).toHaveAttribute('href', '/eventos/edit/1');
+    });
+
+    it('hides the edit link when the event could not be loaded', async () => {
+        getEventById.mockRejectedValue(new Error('Error 404'));
+        vi.spyOn(console, 'error').mockImplementation(() => {}); //silence the expected log
+
+        renderDetail(999);
+
+        await screen.findByRole('alert');
+        expect(screen.queryByRole('link', { name: /Editar/ })).not.toBeInTheDocument();
+    });
+
     it('shows a not-found message when the API returns 404', async () => {
         getEventById.mockRejectedValue(new Error('Error 404'));
         vi.spyOn(console, 'error').mockImplementation(() => {}); //silence the expected log

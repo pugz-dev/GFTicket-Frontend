@@ -35,7 +35,15 @@ export function EventDetail() {
 
     return (
         <section className="event-detail">
-            <Link className="event-detail__back" to="/eventos">← Volver al listado</Link>
+            <div className="event-detail__toolbar">
+                <Link className="event-detail__back" to="/eventos">← Volver al listado</Link>
+                {/*No edit button while loading or on error: there is nothing (confirmed) to edit*/}
+                {!loading && !error && evento && (
+                    <Link className="event-detail__edit" to={`/eventos/edit/${id}`}>
+                        ✏️ Editar
+                    </Link>
+                )}
+            </div>
             {loading && <p className="event-detail__status">Cargando evento...</p>}
             {!loading && error === 'notfound' && (
                 <div className="alert alert-danger" role="alert">Evento con id: {id} no encontrado.</div>
