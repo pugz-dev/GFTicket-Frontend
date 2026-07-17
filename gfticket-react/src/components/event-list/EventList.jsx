@@ -57,6 +57,7 @@ export function EventList() {
             <p className="event-list__subtitle">Aquí se mostrarán los eventos disponibles.</p>
             {loading && <p className="event-list__status">Cargando eventos...</p>}
             {!loading && error && <div className="alert alert-danger" role="alert">Error al cargar los eventos.</div>}
+            {deleteError && <div className="alert alert-danger" role="alert">No se pudo eliminar el evento.</div>}
             {events.length === 0 && !loading && !error && <p className="event-list__status">No hay eventos disponibles.</p>}
             {events.length > 0 && (
                 <div>
@@ -125,7 +126,6 @@ export function EventList() {
                                                 </div>
                                             )}
                                         </td>
-                                    {deleteError && <div className="alert alert-danger" role="alert">No se pudo eliminar el evento.</div>}
                                     </tr>
                                 ))}
                             </tbody>
