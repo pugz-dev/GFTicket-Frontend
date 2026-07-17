@@ -37,3 +37,11 @@ export const updateEventById = async (id, event) => {
     });
     return toEvento(await handleResponse(response));
 }
+
+export const deleteEventById = async (id) => {
+    //Delete does not return body, but we still handle the response status
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE'
+    });
+    await handleResponse(response);
+}

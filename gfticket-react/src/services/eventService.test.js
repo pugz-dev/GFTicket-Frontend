@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach} from 'vitest';
-import { getEvents, getEventById, createEvent, updateEventById } from './eventService';
+import { getEvents, getEventById, createEvent, updateEventById, deleteEventById } from './eventService';
 import { toEvento } from '../models/eventModel';
 
 const API_URL = 'http://teacherbanking.us-east-1.elasticbeanstalk.com/eventos';
@@ -182,5 +182,32 @@ describe('updateEventById', () => {
         fetch.mockResolvedValue(jsonResponse({ message: 'nombre es obligatorio' }, 400));
 
         await expect(updateEventById(42, { ...newEvent, nombre: '' })).rejects.toThrow('Error 400');
+    });
+});
+
+describe('deleteEventById', () => {
+    it('sends a DELETE for the given id and resolves with no value', async () => {
+        //Typical DELETE response: 204 with no body; json() must never be called
+        fetch.mockResolvedValue({
+            ok: true,
+            status: 204,
+            json: () => Promise.reject(new Error('204 has no body')),
+        });
+
+        await expect(deleteEventById(7)).resolves.toBeUndefined();
+
+        expect(fetch).toHaveBeenCalledWith(`${API_URL}/7`, { method: 'DELETE' });
+    });
+
+    it('rejects with the status code when the event does not exist (404)', async () => {
+        fetch.mockResolvedValue(jsonResponse({ message: 'Evento no encontrado' }, 404));
+
+        await expect(deleteEventById(999)).rejects.toThrow('Error 404');
+    });
+
+    it('rejects with the status code on a server error (500)', async () => {
+        fetch.mockResolvedValue(jsonResponse({ message: 'boom' }, 500));
+
+        await expect(deleteEventById(7)).rejects.toThrow('Error 500');
     });
 });
