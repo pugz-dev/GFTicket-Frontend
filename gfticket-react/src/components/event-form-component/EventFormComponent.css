@@ -20,6 +20,13 @@
   color: var(--color-text-muted);
 }
 
+.event-detail__status {
+  margin: 0;
+  padding: 2rem 0;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
 /* One column on mobile, two on desktop; --full fields span the row */
 .event-form__grid {
   display: grid;

@@ -153,7 +153,7 @@ export const EventForm = () => {
 
     return (
         <>
-        {loading && <p className="event-detail__status">Cargando evento...</p>}
+        {loading && <p className="event-form__status">Cargando evento...</p>}
             {!loading && error === 'notfound' && (
                 <div className="alert alert-danger" role="alert">Evento con id: {id} no encontrado.</div>
             )}
