@@ -11,6 +11,7 @@ const TELEFONO_PATTERN = /^[0-9]{9}$/;
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register.html',
+  styleUrl: './register.css',
 })
 export class Register {
   private readonly fb = inject(FormBuilder);

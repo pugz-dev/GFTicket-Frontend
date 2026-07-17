@@ -66,6 +66,15 @@ describe('EventList', () => {
     expect(component).toBeTruthy();
   });
 
+  it('shows a login link pointing to /login', () => {
+    eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
+    createComponent();
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const loginLink = compiled.querySelector('a[href="/login"]');
+    expect(loginLink).toBeTruthy();
+  });
+
   it('calls getEventos exactly once on ngOnInit', () => {
     eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
     createComponent();
