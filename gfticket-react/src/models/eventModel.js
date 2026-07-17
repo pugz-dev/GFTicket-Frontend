@@ -26,7 +26,7 @@ function toHoraEvento(hora) {
 export function toEvento(dto) {
   return {
     id: dto.id,
-    nombre: dto.nombr?? '',
+    nombre: dto.nombre?? '',
     descripcion: dto.descripcion?? '',
     fechaEvento: dto.fechaEvento?? '',
     horaEvento: toHoraEvento(dto.horaEvento?? ''),
