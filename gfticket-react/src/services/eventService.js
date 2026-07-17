@@ -28,3 +28,12 @@ export const getEventById = async (id) =>{
     const response = await fetch(`${API_URL}/${id}`);
     return toEvento(await handleResponse(response));
 }
+
+export const updateEventById = async (id, event) => {
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(event),
+    });
+    return toEvento(await handleResponse(response));
+}
