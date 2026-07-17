@@ -1,15 +1,33 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { MemoryRouter, Routes, Route, Link } from 'react-router-dom';
 import { EventForm } from './EventFormComponent';
-import { createEvent } from '../../services/eventService';
+import { createEvent, getEventById, updateEventById } from '../../services/eventService';
 
 //Replace the whole service module with mocks: no HTTP happens, and every call can be inspected
 vi.mock('../../services/eventService');
 
+//The event that "already exists" in edit-mode tests
+const existingEvent = {
+    id: 1,
+    nombre: 'Jazz Night',
+    descripcion: 'Concierto de jazz en directo',
+    fechaEvento: '2026-09-12',
+    horaEvento: '20:30',
+    precioMinimo: 15,
+    precioMaximo: 45,
+    localidad: 'Madrid',
+    genero: 'Jazz',
+    nombreRecinto: 'Café Central',
+    imagenUrl: 'https://example.com/jazz.jpg',
+};
+
 beforeEach(() => {
     vi.clearAllMocks();
-    //Default: the backend accepts the event. Individual tests override for failure cases.
+    //Default: the backend accepts everything. Individual tests override for failure cases.
     createEvent.mockResolvedValue({ id: 1 });
+    getEventById.mockResolvedValue(existingEvent);
+    updateEventById.mockResolvedValue(existingEvent);
 });
 
 afterEach(() => {
@@ -25,6 +43,19 @@ const blurField = (label) =>
 
 const submitForm = () =>
     fireEvent.click(screen.getByRole('button', { name: 'Registrar evento' }));
+
+//Edit mode needs a real route so useParams sees the :id; the /add route is
+//also mounted so navigation between modes can be tested
+const renderEditForm = (id = 1) =>
+    render(
+        <MemoryRouter initialEntries={[`/eventos/edit/${id}`]}>
+            <Link to="/eventos/add">nuevo evento</Link>
+            <Routes>
+                <Route path="/eventos/add" element={<EventForm />} />
+                <Route path="/eventos/edit/:id" element={<EventForm />} />
+            </Routes>
+        </MemoryRouter>
+    );
 
 //Every required field with valid values; submit stays disabled without them
 const fillValidForm = () => {
@@ -289,6 +320,98 @@ describe('EventForm', () => {
 
             await waitFor(() => expect(screen.getByLabelText('Nombre:')).toHaveValue(''));
             expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+        });
+    });
+
+    describe('edit mode (route with :id)', () => {
+        const submitUpdate = () =>
+            fireEvent.click(screen.getByRole('button', { name: 'Actualizar evento' }));
+
+        it('shows a loading message while the event is being fetched', () => {
+            //Never resolves during this test: the component stays in the loading state
+            getEventById.mockReturnValue(new Promise(() => {}));
+
+            renderEditForm();
+
+            expect(screen.getByText('Cargando evento...')).toBeInTheDocument();
+            expect(screen.queryByLabelText('Nombre:')).not.toBeInTheDocument();
+        });
+
+        it('loads the existing event into the form fields', async () => {
+            renderEditForm();
+
+            expect(await screen.findByLabelText('Nombre:')).toHaveValue('Jazz Night');
+            expect(screen.getByLabelText('Fecha:')).toHaveValue('2026-09-12');
+            expect(screen.getByLabelText('Hora:')).toHaveValue('20:30');
+            expect(screen.getByLabelText('Precio mínimo:')).toHaveValue(15);
+            expect(screen.getByLabelText('Precio máximo:')).toHaveValue(45);
+            expect(screen.getByLabelText('Localidad:')).toHaveValue('Madrid');
+            //Route params are strings
+            expect(getEventById).toHaveBeenCalledWith('1');
+        });
+
+        it('titles the form as an edition and offers an update button', async () => {
+            renderEditForm();
+
+            expect(await screen.findByRole('heading', { name: 'Editar Evento' })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'Actualizar evento' })).toBeInTheDocument();
+            expect(screen.queryByRole('button', { name: 'Registrar evento' })).not.toBeInTheDocument();
+        });
+
+        it('submits the changes through updateEventById, never createEvent, and keeps the values', async () => {
+            renderEditForm();
+
+            await screen.findByLabelText('Nombre:');
+            fillField('Nombre:', 'Jazz Night XL');
+            submitUpdate();
+
+            await waitFor(() =>
+                expect(updateEventById).toHaveBeenCalledWith('1', expect.objectContaining({
+                    id: 1,
+                    nombre: 'Jazz Night XL',
+                }))
+            );
+            expect(createEvent).not.toHaveBeenCalled();
+            //Unlike create mode, the form must NOT clear after updating
+            expect(screen.getByLabelText('Nombre:')).toHaveValue('Jazz Night XL');
+            expect(await screen.findByRole('status')).toHaveTextContent('Evento actualizado correctamente.');
+        });
+
+        it('shows the update error message when the service rejects', async () => {
+            updateEventById.mockRejectedValue(new Error('Error 500'));
+            vi.spyOn(console, 'error').mockImplementation(() => {}); //silence the expected log
+
+            renderEditForm();
+
+            await screen.findByLabelText('Nombre:');
+            submitUpdate();
+
+            expect(await screen.findByRole('alert')).toHaveTextContent(
+                'No se pudo actualizar el evento. Inténtalo de nuevo.'
+            );
+        });
+
+        it('shows a not-found message instead of the form when the event does not exist', async () => {
+            getEventById.mockRejectedValue(new Error('Error 404'));
+            vi.spyOn(console, 'error').mockImplementation(() => {}); //silence the expected log
+
+            renderEditForm(999);
+
+            expect(await screen.findByRole('alert')).toHaveTextContent('Evento con id: 999 no encontrado.');
+            expect(screen.queryByLabelText('Nombre:')).not.toBeInTheDocument();
+        });
+
+        it('resets to an empty create form when navigating from edit to add', async () => {
+            renderEditForm();
+
+            expect(await screen.findByLabelText('Nombre:')).toHaveValue('Jazz Night');
+
+            //Same component type at the same route position: React keeps the instance,
+            //so the id-effect reset is what prevents stale prefilled data
+            fireEvent.click(screen.getByText('nuevo evento'));
+
+            expect(screen.getByLabelText('Nombre:')).toHaveValue('');
+            expect(screen.getByRole('heading', { name: 'Crear Evento' })).toBeInTheDocument();
         });
     });
 });
