@@ -196,4 +196,34 @@ describe('PurchaseService', () => {
         req.flush(mockUnstableSystemResponse, { status: 500, statusText: 'Internal Server Error' });
     });
 
+    it('returns a friendly message for an invalid card number (400.0003)', () => {
+        expect(service.getMensajeError('400.0003.Número Tarjeta no correcto')).toBe(
+            'El número de tarjeta no es válido',
+        );
+    });
+
+    it('returns a friendly message for insufficient funds (400.0001)', () => {
+        expect(service.getMensajeError('400.0001.Sin fondos')).toBe(
+            'No hay fondos suficientes en la tarjeta',
+        );
+    });
+
+    it('returns a friendly message for an expired card (400.0007)', () => {
+        expect(service.getMensajeError('400.0007.Fecha caducidad incorrecta')).toBe(
+            'La tarjeta está caducada',
+        );
+    });
+
+    it('returns a friendly message when the payment system is unstable (500.0001)', () => {
+        expect(service.getMensajeError('500.0001.Sistema inestable')).toBe(
+            'El sistema de pago no está disponible ahora mismo. Inténtalo de nuevo en unos minutos',
+        );
+    });
+
+    it('returns a generic fallback message for an unrecognized error code', () => {
+        expect(service.getMensajeError('999.9999.Codigo desconocido')).toBe(
+            'Ha ocurrido un error al procesar el pago',
+        );
+    });
+
 });
