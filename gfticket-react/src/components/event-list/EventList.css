@@ -100,8 +100,77 @@
   line-height: 1;
   transition: background 0.15s ease, border-color 0.15s ease;
 }
+/* The delete button shares the edit button's base look */
+.event-list__delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
 
 .event-list__edit:hover {
+  background: var(--color-primary-bg);
+  border-color: var(--color-primary);
+}
+
+/* Destructive action: red hover instead of the primary tint */
+.event-list__delete:hover {
+  background: var(--color-error-bg);
+  border-color: var(--color-error);
+}
+
+/* Both action buttons side by side in the single Acciones cell */
+.event-list__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Inline delete confirmation, replacing the row actions */
+.event-list__confirm-label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.event-list__confirm-yes,
+.event-list__confirm-no {
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+/* Destructive: solid red so the dangerous choice is unmistakable */
+.event-list__confirm-yes {
+  border: 1px solid var(--color-error);
+  background: var(--color-error);
+  color: #fff;
+}
+
+.event-list__confirm-yes:hover {
+  background: #991b1b;
+}
+
+.event-list__confirm-no {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.event-list__confirm-no:hover {
   background: var(--color-primary-bg);
   border-color: var(--color-primary);
 }

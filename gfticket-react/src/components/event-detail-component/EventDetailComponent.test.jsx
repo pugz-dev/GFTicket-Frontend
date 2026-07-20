@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { EventDetail } from './EventDetailComponent';
-import { getEventById } from '../../services/eventService';
+import { getEventById, deleteEventById } from '../../services/eventService';
 
 vi.mock('../../services/eventService');
 
@@ -24,6 +24,7 @@ const evento =
 beforeEach(() => {
     vi.clearAllMocks();
     getEventById.mockResolvedValue(evento);
+    deleteEventById.mockResolvedValue(undefined);
 });
 
 afterEach(() => {
@@ -31,11 +32,13 @@ afterEach(() => {
 });
 
 //useParams only sees an :id if the component sits inside a matching route,
-//so the wrapper mounts a real route tree and navigates to the given id
+//so the wrapper mounts a real route tree and navigates to the given id.
+//The /eventos marker route makes the post-delete navigation observable.
 const renderDetail = (id = 1) =>
     render(
         <MemoryRouter initialEntries={[`/eventos/${id}`]}>
             <Routes>
+                <Route path="/eventos" element={<p>listado de eventos (marcador)</p>} />
                 <Route path="/eventos/:id" element={<EventDetail />} />
             </Routes>
         </MemoryRouter>
@@ -102,6 +105,61 @@ describe('EventDetail', () => {
 
         await screen.findByRole('alert');
         expect(screen.queryByRole('link', { name: /Editar/ })).not.toBeInTheDocument();
+    });
+
+    describe('delete (inline confirmation + redirect)', () => {
+        it('offers a delete button that asks for inline confirmation first', async () => {
+            renderDetail();
+
+            fireEvent.click(await screen.findByRole('button', { name: 'Eliminar Jazz Night' }));
+
+            //Nothing deleted yet: the user still has to confirm
+            expect(deleteEventById).not.toHaveBeenCalled();
+            expect(screen.getByText('¿Eliminar?')).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'Confirmar eliminación de Jazz Night' })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'Cancelar eliminación de Jazz Night' })).toBeInTheDocument();
+        });
+
+        it('deletes and navigates back to the list when confirmed', async () => {
+            renderDetail();
+
+            fireEvent.click(await screen.findByRole('button', { name: 'Eliminar Jazz Night' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Confirmar eliminación de Jazz Night' }));
+
+            //Route params are strings, so the service receives '1'
+            await waitFor(() => expect(deleteEventById).toHaveBeenCalledWith('1'));
+            //This page's event no longer exists: the user must land back on the list
+            expect(await screen.findByText('listado de eventos (marcador)')).toBeInTheDocument();
+        });
+
+        it('restores the toolbar actions when the confirmation is declined', async () => {
+            renderDetail();
+
+            fireEvent.click(await screen.findByRole('button', { name: 'Eliminar Jazz Night' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Cancelar eliminación de Jazz Night' }));
+
+            expect(deleteEventById).not.toHaveBeenCalled();
+            expect(screen.queryByText('¿Eliminar?')).not.toBeInTheDocument();
+            //Still on the detail page, with both actions back
+            expect(screen.getByRole('heading', { name: 'Jazz Night' })).toBeInTheDocument();
+            expect(screen.getByRole('link', { name: /Editar/ })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'Eliminar Jazz Night' })).toBeInTheDocument();
+        });
+
+        it('shows an error and stays on the page when the service rejects', async () => {
+            deleteEventById.mockRejectedValue(new Error('Error 500'));
+            vi.spyOn(console, 'error').mockImplementation(() => {}); //silence the expected log
+
+            renderDetail();
+
+            fireEvent.click(await screen.findByRole('button', { name: 'Eliminar Jazz Night' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Confirmar eliminación de Jazz Night' }));
+
+            expect(await screen.findByRole('alert')).toHaveTextContent('No se pudo eliminar el evento.');
+            //No navigation: the event still exists, the user stays where they were
+            expect(screen.getByRole('heading', { name: 'Jazz Night' })).toBeInTheDocument();
+            expect(screen.queryByText('listado de eventos (marcador)')).not.toBeInTheDocument();
+        });
     });
 
     it('shows a not-found message when the API returns 404', async () => {

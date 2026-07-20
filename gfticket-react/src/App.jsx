@@ -40,10 +40,6 @@ function App() {
           <Route path="eventos/add" element={<EventForm />} />
           <Route path="eventos/:id" element={<EventDetail />} />
           <Route path="eventos/edit/:id" element={<EventForm />} />
-          {/*
-          
-          <Route path="eventos/delete/:id" element={<EventDelete />} /> 
-           */}
         </Route>
         <Route path="*" element={<PageNotFound />}></Route>
       </Routes>

@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { EventList } from './EventList';
-import { getEvents } from '../../services/eventService';
+import { getEvents, deleteEventById } from '../../services/eventService';
 
 //Replace the whole service module with mocks: no HTTP happens, and every call can be inspected
 vi.mock('../../services/eventService');
@@ -44,6 +44,7 @@ const eventos = [
 beforeEach(() => {
     vi.clearAllMocks();
     getEvents.mockResolvedValue(eventos);
+    deleteEventById.mockResolvedValue(undefined);
 });
 
 afterEach(() => {
@@ -109,6 +110,71 @@ describe('EventList', () => {
 
         expect(await screen.findByText('No hay eventos disponibles.')).toBeInTheDocument();
         expect(screen.queryByRole('table')).not.toBeInTheDocument();
+    });
+
+    describe('delete (inline confirmation, no browser dialogs)', () => {
+        it('replaces the row actions with an inline confirmation instead of deleting immediately', async () => {
+            renderList();
+
+            fireEvent.click(await screen.findByRole('button', { name: 'Eliminar Jazz Night' }));
+
+            //Nothing deleted yet: the user still has to confirm
+            expect(deleteEventById).not.toHaveBeenCalled();
+            expect(screen.getByText('¿Eliminar?')).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'Confirmar eliminación de Jazz Night' })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'Cancelar eliminación de Jazz Night' })).toBeInTheDocument();
+        });
+
+        it('deletes and removes the row when the confirmation is accepted', async () => {
+            renderList();
+
+            fireEvent.click(await screen.findByRole('button', { name: 'Eliminar Jazz Night' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Confirmar eliminación de Jazz Night' }));
+
+            await waitFor(() => expect(deleteEventById).toHaveBeenCalledWith(1));
+            //The deleted event must leave the table without a page reload
+            await waitFor(() => expect(screen.queryByText('Jazz Night')).not.toBeInTheDocument());
+            expect(screen.getByText('Hay 1 eventos disponibles')).toBeInTheDocument();
+        });
+
+        it('restores the normal actions when the confirmation is declined', async () => {
+            renderList();
+
+            fireEvent.click(await screen.findByRole('button', { name: 'Eliminar Jazz Night' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Cancelar eliminación de Jazz Night' }));
+
+            expect(deleteEventById).not.toHaveBeenCalled();
+            expect(screen.getByText('Jazz Night')).toBeInTheDocument();
+            expect(screen.queryByText('¿Eliminar?')).not.toBeInTheDocument();
+            //The trash button is back for another try
+            expect(screen.getByRole('button', { name: 'Eliminar Jazz Night' })).toBeInTheDocument();
+        });
+
+        it('only one row shows the confirmation at a time', async () => {
+            renderList();
+
+            fireEvent.click(await screen.findByRole('button', { name: 'Eliminar Jazz Night' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Eliminar Festival Gratuito' }));
+
+            //The confirmation moved to the second row
+            expect(screen.queryByRole('button', { name: 'Confirmar eliminación de Jazz Night' })).not.toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'Confirmar eliminación de Festival Gratuito' })).toBeInTheDocument();
+        });
+
+        it('shows a delete-specific error and keeps the row when the service rejects', async () => {
+            deleteEventById.mockRejectedValue(new Error('Error 500'));
+            vi.spyOn(console, 'error').mockImplementation(() => {}); //silence the expected log
+
+            renderList();
+
+            fireEvent.click(await screen.findByRole('button', { name: 'Eliminar Jazz Night' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Confirmar eliminación de Jazz Night' }));
+
+            expect(await screen.findByRole('alert')).toHaveTextContent('No se pudo eliminar el evento.');
+            //Not the load-error message, and the row survives
+            expect(screen.queryByText('Error al cargar los eventos.')).not.toBeInTheDocument();
+            expect(screen.getByText('Jazz Night')).toBeInTheDocument();
+        });
     });
 
     it('shows an error alert when the fetch fails, without the empty state', async () => {

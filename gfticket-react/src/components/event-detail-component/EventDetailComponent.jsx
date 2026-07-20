@@ -1,15 +1,33 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { getEventById } from '../../services/eventService';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { getEventById, deleteEventById } from '../../services/eventService';
 import './EventDetailComponent.css';
 
 export function EventDetail() {
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const [evento, setEvento] = useState(null);
     const [loading, setLoading] = useState(true);
     //Error check containing error message
     const [error, setError] = useState(null);
+    //Inline delete confirmation open? (single event here, a boolean is enough)
+    const [confirmingDelete, setConfirmingDelete] = useState(false);
+    const [deleteError, setDeleteError] = useState(false);
+
+    //Runs only after the inline confirmation: by here the user already said yes
+    const handleDelete = async () => {
+        setConfirmingDelete(false);
+        setDeleteError(false);
+        try {
+            await deleteEventById(id);
+            //This page's event no longer exists: programmatic navigation back to the list
+            navigate('/eventos');
+        } catch (err) {
+            console.error(err);
+            setDeleteError(true);
+        }
+    };
 
     useEffect(() => {
         //A stale fetch (unmount, or id changed mid-flight) must not reach state
@@ -37,13 +55,41 @@ export function EventDetail() {
         <section className="event-detail">
             <div className="event-detail__toolbar">
                 <Link className="event-detail__back" to="/eventos">← Volver al listado</Link>
-                {/*No edit button while loading or on error: there is nothing (confirmed) to edit*/}
+                {/*No actions while loading or on error: there is nothing (confirmed) to act on*/}
                 {!loading && !error && evento && (
-                    <Link className="event-detail__edit" to={`/eventos/edit/${id}`}>
-                        ✏️ Editar
-                    </Link>
+                    confirmingDelete ? (
+                        //Inline confirmation replaces the toolbar actions until answered
+                        <div className="event-detail__actions">
+                            <span className="event-detail__confirm-label">¿Eliminar?</span>
+                            <button
+                                className="event-detail__confirm-yes"
+                                aria-label={`Confirmar eliminación de ${evento.nombre}`}
+                                onClick={handleDelete}>
+                                Sí
+                            </button>
+                            <button
+                                className="event-detail__confirm-no"
+                                aria-label={`Cancelar eliminación de ${evento.nombre}`}
+                                onClick={() => setConfirmingDelete(false)}>
+                                No
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="event-detail__actions">
+                            <Link className="event-detail__edit" to={`/eventos/edit/${id}`}>
+                                ✏️ Editar
+                            </Link>
+                            <button
+                                className="event-detail__delete"
+                                aria-label={`Eliminar ${evento.nombre}`}
+                                onClick={() => setConfirmingDelete(true)}>
+                                🗑️ Eliminar
+                            </button>
+                        </div>
+                    )
                 )}
             </div>
+            {deleteError && <div className="alert alert-danger" role="alert">No se pudo eliminar el evento.</div>}
             {loading && <p className="event-detail__status">Cargando evento...</p>}
             {!loading && error === 'notfound' && (
                 <div className="alert alert-danger" role="alert">Evento con id: {id} no encontrado.</div>
