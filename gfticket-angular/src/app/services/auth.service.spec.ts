@@ -1,0 +1,65 @@
+import { TestBed } from '@angular/core/testing';
+
+import { UserModel } from '../models/user.model';
+import { UserStorageService } from './user-storage.service';
+import { AuthService } from './auth.service';
+
+describe('AuthService', () => {
+  let service: AuthService;
+  let userStorageService: UserStorageService;
+
+  const usuario: Omit<UserModel, 'id'> = {
+    nombre: 'Ana',
+    apellidos: 'Garcia',
+    email: 'ana@test.com',
+    password: 'secret123',
+    telefono: '600111222',
+  };
+
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(AuthService);
+    userStorageService = TestBed.inject(UserStorageService);
+
+    userStorageService.registrarUsuario(usuario);
+  });
+
+  it('returns the matching user when the credentials are correct', () => {
+    const result = service.loginUsuario({ email: usuario.email, password: usuario.password });
+
+    expect(result).toEqual({ ...usuario, id: 1 });
+  });
+
+  it('matches the email case-insensitively', () => {
+    const result = service.loginUsuario({ email: 'ANA@TEST.COM', password: usuario.password });
+
+    expect(result).toEqual({ ...usuario, id: 1 });
+  });
+
+  it('ignores surrounding whitespace in the email', () => {
+    const result = service.loginUsuario({ email: '  ana@test.com  ', password: usuario.password });
+
+    expect(result).toEqual({ ...usuario, id: 1 });
+  });
+
+  it('returns null when the password is incorrect', () => {
+    const result = service.loginUsuario({ email: usuario.email, password: 'wrongPassword' });
+
+    expect(result).toBeNull();
+  });
+
+  it('returns null when the email does not exist', () => {
+    const result = service.loginUsuario({ email: 'noexiste@test.com', password: usuario.password });
+
+    expect(result).toBeNull();
+  });
+
+  it('returns null when there are no users stored', () => {
+    localStorage.clear();
+
+    const result = service.loginUsuario({ email: usuario.email, password: usuario.password });
+
+    expect(result).toBeNull();
+  });
+});
