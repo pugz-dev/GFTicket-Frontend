@@ -62,4 +62,22 @@ describe('AuthService', () => {
 
     expect(result).toBeNull();
   });
+
+  describe('estaAutenticado', () => {
+    it('returns false when there is no active session', () => {
+      expect(service.estaAutenticado()).toBe(false);
+    });
+
+    it('returns true after a successful login', () => {
+      service.loginUsuario({ email: usuario.email, password: usuario.password });
+
+      expect(service.estaAutenticado()).toBe(true);
+    });
+
+    it('remains false after a failed login', () => {
+      service.loginUsuario({ email: usuario.email, password: 'wrongPassword' });
+
+      expect(service.estaAutenticado()).toBe(false);
+    });
+  });
 });
