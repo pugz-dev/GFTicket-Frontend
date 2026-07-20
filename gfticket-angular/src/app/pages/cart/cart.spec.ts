@@ -26,7 +26,6 @@ describe('Cart', () => {
   };
 
   beforeEach(async () => {
-
     eventServiceSpy = {
       getEventById: jest.fn(),
     } as unknown as jest.Mocked<EventService>;
@@ -42,18 +41,23 @@ describe('Cart', () => {
         provideRouter([]),
       ],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(Cart);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
+  function createComponent(): void {
+    fixture = TestBed.createComponent(Cart);
+    component = fixture.componentInstance;
+  }
+
   it('should create', () => {
+    eventServiceSpy.getEventById.mockReturnValue(of(mockEvent));
+    createComponent();
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it('should show the event information in the cart DOM', () => {
     eventServiceSpy.getEventById.mockReturnValue(of(mockEvent));
+    createComponent();
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
 
@@ -68,6 +72,7 @@ describe('Cart', () => {
 
   it('shows a loading state before the request resolves', () => {
     eventServiceSpy.getEventById.mockReturnValue(of(mockEvent));
+    createComponent();
     expect(component.loading).toBe(true);
   });
 
@@ -75,6 +80,7 @@ describe('Cart', () => {
     eventServiceSpy.getEventById.mockReturnValue(
       throwError(() => ({ status: 404 })),
     );
+    createComponent();
     fixture.detectChanges();
     expect(component.error).toBe(true);
     expect(component.loading).toBe(false);
@@ -82,6 +88,7 @@ describe('Cart', () => {
 
   it('links back to the catalog', () => {
     eventServiceSpy.getEventById.mockReturnValue(of(mockEvent));
+    createComponent();
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
 

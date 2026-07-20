@@ -1,1 +1,25 @@
-<p>cart works!</p>
+@if (loading) {
+<div class="page">
+  <p class="status">Loading...</p>
+</div>
+} @else if (error) {
+<div class="page state state--error">
+  <p class="state__message">Event not found.</p>
+  <a class="back-link" routerLink="/eventos">← Volver a eventos</a>
+</div>
+} @else if (event) {
+<article class="page cart">
+  <a class="back-link" routerLink="/eventos">← Volver a eventos</a>
+
+  <div class="cart__item">
+    <img class="cart__image" [src]="event.imagenUrl" [alt]="event.nombre" />
+
+    <div class="cart__body">
+      <h1 class="cart__title">{{ event.nombre }}</h1>
+      <span class="cart__price">{{ event.precioMinimo }} € – {{ event.precioMaximo }} €</span>
+    </div>
+  </div>
+
+  <a class="cart__checkout">Seleccionar e ir a pagar</a>
+</article>
+}
