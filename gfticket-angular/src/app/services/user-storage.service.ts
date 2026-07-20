@@ -44,7 +44,7 @@ export class UserStorageService {
     return nuevoUsuario;
   }
 
-  private getUsuarios(): UserModel[] {
+  getUsuarios(): UserModel[] {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
   }

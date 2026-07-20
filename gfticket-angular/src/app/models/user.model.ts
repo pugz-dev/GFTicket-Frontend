@@ -6,3 +6,8 @@ export interface UserModel {
     password: string;
     telefono: string;
 }
+
+export interface Credenciales {
+    email: string;
+    password: string;
+}
