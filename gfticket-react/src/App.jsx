@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { BrowserRouter, Routes, Route, Link, Outlet, Navigate } from "react-router-dom";
-import { EventList } from './components/event-list/EventList';
+import { EventList } from './components/event-list-component/EventListComponent';
 import { PageNotFound } from './components/page-not-found/PageNotFound'; 
 import './App.css'
 import { EventForm } from './components/event-form-component/EventFormComponent';

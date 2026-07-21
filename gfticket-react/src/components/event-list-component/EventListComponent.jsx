@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getEvents, deleteEventById } from '../../services/eventService';
-import './EventList.css';
+import './EventListComponent.css';
 
 
 
