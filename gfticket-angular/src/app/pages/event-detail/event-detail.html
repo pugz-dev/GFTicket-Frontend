@@ -58,7 +58,7 @@
           <span class="event-detail__price-label">Precio</span>
           <span class="event-detail__price-value">{{ event.precioMinimo }} € – {{ event.precioMaximo }} €</span>
         </div>
-        <a class="event-detail__buy">Comprar entradas</a>
+        <a class="event-detail__buy" [routerLink]="['/carrito', event.id]">Comprar entradas</a>
       </div>
       <br>
       <p class="event-detail__description">{{ event.descripcion }}</p>
