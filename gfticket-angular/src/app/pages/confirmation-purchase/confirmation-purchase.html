@@ -1,1 +1,15 @@
-<p>confirmation-purchase works!</p>
+<div class="page confirmation">
+  @if (success) {
+    <h1 class="confirmation__title confirmation__title--success">¡Compra realizada!</h1>
+  } @else {
+    <h1 class="confirmation__title confirmation__title--error">No se ha podido completar la compra</h1>
+  }
+
+  <p class="confirmation__message">{{ mensaje }}</p>
+
+  @if (success) {
+    <a class="catalog-link" routerLink="/eventos">Volver al catálogo</a>
+  } @else {
+    <a class="retry-link" [routerLink]="['/carrito', eventId]">Volver al carrito</a>
+  }
+</div>
