@@ -9,8 +9,8 @@ export function EventDetail() {
 
     const [evento, setEvento] = useState(null);
     const [loading, setLoading] = useState(true);
-    //Error check containing error message
-    const [error, setError] = useState(null);
+    //Error check containing loadingError message
+    const [loadingError, setLoadingError] = useState(null);
     //Inline delete confirmation open? (single event here, a boolean is enough)
     const [confirmingDelete, setConfirmingDelete] = useState(false);
     const [deleteError, setDeleteError] = useState(false);
@@ -33,7 +33,7 @@ export function EventDetail() {
         //A stale fetch (unmount, or id changed mid-flight) must not reach state
         let ignore = false;
         setLoading(true);
-        setError(null);
+        setLoadingError(null);
 
         const fetchEvent = async () => {
             try {
@@ -41,7 +41,7 @@ export function EventDetail() {
                 if (!ignore) setEvento(data);
             } catch (err) {
                 console.error(err);
-                if (!ignore) setError(err.message === 'Error 404' ? 'notfound' : 'error');
+                if (!ignore) setLoadingError(err.message === 'Error 404' ? 'notfound' : 'error');
             } finally {
                 if (!ignore) setLoading(false);
             }
@@ -56,7 +56,7 @@ export function EventDetail() {
             <div className="event-detail__toolbar">
                 <Link className="event-detail__back" to="/eventos">← Volver al listado</Link>
                 {/*No actions while loading or on error: there is nothing (confirmed) to act on*/}
-                {!loading && !error && evento && (
+                {!loading && !loadingError && evento && (
                     confirmingDelete ? (
                         //Inline confirmation replaces the toolbar actions until answered
                         <div className="event-detail__actions">
@@ -91,13 +91,13 @@ export function EventDetail() {
             </div>
             {deleteError && <div className="alert alert-danger" role="alert">No se pudo eliminar el evento.</div>}
             {loading && <p className="event-detail__status">Cargando evento...</p>}
-            {!loading && error === 'notfound' && (
+            {!loading && loadingError === 'notfound' && (
                 <div className="alert alert-danger" role="alert">Evento con id: {id} no encontrado.</div>
             )}
-            {!loading && error === 'error' && (
+            {!loading && loadingError === 'error' && (
                 <div className="alert alert-danger" role="alert">No se pudo cargar el evento con id: {id}.</div>
             )}
-            {!loading && !error && evento && (
+            {!loading && !loadingError && evento && (
                 <div className="event-detail__layout">
                     <div>
                         <span className="event-detail__genre">{evento.genero}</span>

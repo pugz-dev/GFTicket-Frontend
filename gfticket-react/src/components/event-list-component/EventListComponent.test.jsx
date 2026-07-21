@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { EventList } from './EventList';
+import { EventList } from './EventListComponent';
 import { getEvents, deleteEventById } from '../../services/eventService';
 
 //Replace the whole service module with mocks: no HTTP happens, and every call can be inspected
