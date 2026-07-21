@@ -80,4 +80,38 @@ describe('AuthService', () => {
       expect(service.estaAutenticado()).toBe(false);
     });
   });
+
+  describe('usuarioActual', () => {
+    it('is null when there is no active session', () => {
+      expect(service.usuarioActual()).toBeNull();
+    });
+
+    it('holds the logged in user after a successful login', () => {
+      service.loginUsuario({ email: usuario.email, password: usuario.password });
+
+      expect(service.usuarioActual()).toEqual({ ...usuario, id: 1 });
+    });
+
+    it('is restored from an existing session when the service is created', () => {
+      localStorage.setItem('sesionActual', usuario.email);
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({});
+      const freshService = TestBed.inject(AuthService);
+
+      expect(freshService.usuarioActual()).toEqual({ ...usuario, id: 1 });
+    });
+  });
+
+  describe('logout', () => {
+    it('clears the active session', () => {
+      service.loginUsuario({ email: usuario.email, password: usuario.password });
+
+      service.logout();
+
+      expect(service.estaAutenticado()).toBe(false);
+      expect(service.usuarioActual()).toBeNull();
+      expect(localStorage.getItem('sesionActual')).toBeNull();
+    });
+  });
 });
