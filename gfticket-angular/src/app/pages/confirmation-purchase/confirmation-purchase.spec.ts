@@ -50,7 +50,7 @@ describe('ConfirmationPurchase', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.textContent?.toLowerCase()).toContain('éxito');
+    expect(compiled.textContent?.toLowerCase()).toContain('compra realizada');
   });
 
   it('shows a link back to the cart when the purchase fails', () => {
