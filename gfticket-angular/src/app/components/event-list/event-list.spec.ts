@@ -2,7 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
 import { EventModel } from '../../models/event.model';
+import { AuthService } from '../../services/auth.service';
 import { EventService } from '../../services/event.service';
+import { UserStorageService } from '../../services/user-storage.service';
 import { EventList } from './event-list';
 import { provideRouter } from '@angular/router';
 
@@ -41,6 +43,8 @@ describe('EventList', () => {
   ];
 
   beforeEach(async () => {
+    localStorage.clear();
+
     eventServiceSpy = {
       getEventos: jest.fn(),
       getEventosByName: jest.fn(),
@@ -192,5 +196,113 @@ describe('EventList', () => {
 
     expect(component.error).toBe(true);
     expect(component.events).toEqual([]);
+  });
+
+  describe('user menu', () => {
+    function loginTestUser(): void {
+      const authService = TestBed.inject(AuthService);
+      const userStorageService = TestBed.inject(UserStorageService);
+      userStorageService.registrarUsuario({
+        nombre: 'Ana',
+        apellidos: 'Garcia',
+        email: 'ana@test.com',
+        password: 'secret123',
+        telefono: '611222333',
+      });
+      authService.loginUsuario({ email: 'ana@test.com', password: 'secret123' });
+    }
+
+    it('shows a login link when there is no active session', () => {
+      eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
+      createComponent();
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('.topbar__login')).toBeTruthy();
+      expect(compiled.querySelector('.topbar__user')).toBeFalsy();
+    });
+
+    it('shows the user name and hides the login link when authenticated', () => {
+      loginTestUser();
+
+      eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
+      createComponent();
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('.topbar__login')).toBeFalsy();
+      expect(compiled.querySelector('.topbar__user-btn')?.textContent).toContain('Ana');
+    });
+
+    it('toggles the dropdown menu when the user button is clicked', () => {
+      loginTestUser();
+
+      eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
+      createComponent();
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      expect(compiled.querySelector('.topbar__menu')).toBeFalsy();
+
+      const userBtn = compiled.querySelector('.topbar__user-btn') as HTMLElement;
+      userBtn.click();
+      fixture.detectChanges();
+
+      expect(compiled.querySelector('.topbar__menu')).toBeTruthy();
+    });
+
+    it('logs the user out and shows the login link again', () => {
+      const authService = TestBed.inject(AuthService);
+      loginTestUser();
+
+      eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
+      createComponent();
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      (compiled.querySelector('.topbar__user-btn') as HTMLElement).click();
+      fixture.detectChanges();
+      (compiled.querySelector('.topbar__menu-item') as HTMLElement).click();
+      fixture.detectChanges();
+
+      expect(component.menuOpen).toBe(false);
+      expect(authService.estaAutenticado()).toBe(false);
+      expect(compiled.querySelector('.topbar__login')).toBeTruthy();
+    });
+
+    it('closes the menu when clicking outside the component', () => {
+      loginTestUser();
+
+      eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
+      createComponent();
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      (compiled.querySelector('.topbar__user-btn') as HTMLElement).click();
+      fixture.detectChanges();
+      expect(compiled.querySelector('.topbar__menu')).toBeTruthy();
+
+      document.body.click();
+      fixture.detectChanges();
+
+      expect(compiled.querySelector('.topbar__menu')).toBeFalsy();
+    });
+
+    it('keeps the menu open when clicking inside the component but outside the toggle button', () => {
+      loginTestUser();
+
+      eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
+      createComponent();
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      (compiled.querySelector('.topbar__user-btn') as HTMLElement).click();
+      fixture.detectChanges();
+
+      (compiled.querySelector('.topbar__menu') as HTMLElement).click();
+      fixture.detectChanges();
+
+      expect(compiled.querySelector('.topbar__menu')).toBeTruthy();
+    });
   });
 });

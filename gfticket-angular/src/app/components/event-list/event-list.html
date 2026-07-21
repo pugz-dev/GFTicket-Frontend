@@ -1,5 +1,20 @@
 <div class="topbar">
-  <a class="topbar__login" routerLink="/login">Iniciar sesión</a>
+  @if (authService.usuarioActual(); as usuario) {
+    <div class="topbar__user">
+      <button class="topbar__user-btn" type="button" (click)="toggleMenu()">
+        <span class="topbar__avatar">{{ usuario.nombre.charAt(0) }}</span>
+        {{ usuario.nombre }}
+        <span class="topbar__chevron">▾</span>
+      </button>
+      @if (menuOpen) {
+        <div class="topbar__menu">
+          <button class="topbar__menu-item" type="button" (click)="onLogout()">Cerrar sesión</button>
+        </div>
+      }
+    </div>
+  } @else {
+    <a class="topbar__login" routerLink="/login">Iniciar sesión</a>
+  }
 </div>
 
 @if (loading) {
