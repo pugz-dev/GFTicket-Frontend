@@ -20,6 +20,40 @@
     </div>
   </div>
 
-  <a class="cart__checkout">Seleccionar e ir a pagar</a>
+  <form class="cart__form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label class="cart__field">
+      Email
+      <input type="email" formControlName="email" />
+    </label>
+
+    <label class="cart__field">
+      Nombre del titular
+      <input type="text" formControlName="nombreTitular" />
+    </label>
+
+    <label class="cart__field">
+      Número de tarjeta
+      <input type="text" formControlName="numeroTarjeta" placeholder="4XXX-XXXX-XXXX-XXXX" />
+    </label>
+
+    <div class="cart__field-row">
+      <label class="cart__field">
+        Mes de caducidad
+        <input type="text" formControlName="mesCaducidad" placeholder="MM" />
+      </label>
+
+      <label class="cart__field">
+        Año de caducidad
+        <input type="text" formControlName="yearCaducidad" placeholder="AAAA" />
+      </label>
+
+      <label class="cart__field">
+        CVV
+        <input type="text" formControlName="cvv" />
+      </label>
+    </div>
+
+    <button type="submit" class="cart__checkout" [disabled]="form.invalid">Seleccionar e ir a pagar</button>
+  </form>
 </article>
 }
