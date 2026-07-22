@@ -1,3 +1,5 @@
+import { TicketModel } from "./ticket.model";
+
 export interface UserModel {
     id: number;
     nombre: string;
@@ -5,6 +7,7 @@ export interface UserModel {
     email: string;
     password: string;
     telefono: string;
+    entradas?: TicketModel[];
 }
 
 export interface Credenciales {
