@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { UserModel } from '../models/user.model';
+import { TicketModel } from '../models/ticket.model';
 
 const STORAGE_KEY = 'usuarios';
 
@@ -42,6 +43,16 @@ export class UserStorageService {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(usuarios));
 
     return nuevoUsuario;
+  }
+
+  asociarEntrada(email: string, entrada: TicketModel): void {
+    const usuarios = this.getUsuarios();
+    const usuarioEstaAsociado = usuarios.find(user => user.email === email)
+    if (usuarioEstaAsociado) {
+      usuarioEstaAsociado.entradas = [...usuarioEstaAsociado.entradas ?? [], entrada];
+    }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(usuarios));
   }
 
   getUsuarios(): UserModel[] {
