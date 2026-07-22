@@ -3,7 +3,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Cart } from './cart';
 import { EventService } from '../../services/event.service';
 import { PurchaseService } from '../../services/purchase.service';
+import { AuthService } from '../../services/auth.service';
+import { UserStorageService } from '../../services/user-storage.service';
 import { EventModel } from '../../models/event.model';
+import { UserModel } from '../../models/user.model';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
@@ -12,6 +15,8 @@ describe('Cart', () => {
   let fixture: ComponentFixture<Cart>;
   let eventServiceSpy: jest.Mocked<EventService>;
   let purchaseServiceSpy: jest.Mocked<PurchaseService>;
+  let authServiceSpy: jest.Mocked<AuthService>;
+  let userStorageServiceSpy: jest.Mocked<UserStorageService>;
   let router: Router;
 
   const mockEvent: EventModel = {
@@ -26,6 +31,15 @@ describe('Cart', () => {
     genero: 'Rock',
     nombreRecinto: 'Test Hall',
     imagenUrl: 'test.jpg',
+  };
+
+  const mockLoggedInUser: UserModel = {
+    id: 1,
+    nombre: 'Ana',
+    apellidos: 'Garcia',
+    email: 'ana@test.com',
+    password: 'secret123',
+    telefono: '600111222',
   };
 
   const validFormValue = {
@@ -50,11 +64,21 @@ describe('Cart', () => {
       getMensajeError: jest.fn(),
     } as unknown as jest.Mocked<PurchaseService>;
 
+    authServiceSpy = {
+      usuarioActual: jest.fn().mockReturnValue(mockLoggedInUser),
+    } as unknown as jest.Mocked<AuthService>;
+
+    userStorageServiceSpy = {
+      asociarEntrada: jest.fn(),
+    } as unknown as jest.Mocked<UserStorageService>;
+
     await TestBed.configureTestingModule({
       imports: [Cart],
       providers: [
         { provide: EventService, useValue: eventServiceSpy },
         { provide: PurchaseService, useValue: purchaseServiceSpy },
+        { provide: AuthService, useValue: authServiceSpy },
+        { provide: UserStorageService, useValue: userStorageServiceSpy },
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { paramMap: { get: () => '1' } } },
@@ -157,20 +181,33 @@ describe('Cart', () => {
     component.form.setValue(validFormValue);
     component.onSubmit();
 
-    expect(purchaseServiceSpy.compraEntradas).toHaveBeenCalledWith(
-      {
-        email: validFormValue.email,
-        eventId: mockEvent.id,
-        cardData: {
-          nombreTitular: validFormValue.nombreTitular,
-          numeroTarjeta: validFormValue.numeroTarjeta,
-          mesCaducidad: validFormValue.mesCaducidad,
-          yearCaducidad: validFormValue.yearCaducidad,
-          cvv: validFormValue.cvv,
-        },
+    expect(purchaseServiceSpy.compraEntradas).toHaveBeenCalledTimes(1);
+    const [purchaseArg, eventArg, cantidadArg] = purchaseServiceSpy.compraEntradas.mock.calls[0];
+    expect(purchaseArg).toEqual({
+      email: validFormValue.email,
+      eventId: mockEvent.id,
+      cardData: {
+        nombreTitular: validFormValue.nombreTitular,
+        numeroTarjeta: validFormValue.numeroTarjeta,
+        mesCaducidad: validFormValue.mesCaducidad,
+        yearCaducidad: validFormValue.yearCaducidad,
+        cvv: validFormValue.cvv,
       },
-      mockEvent,
-    );
+    });
+    expect(eventArg).toEqual(mockEvent);
+    expect(cantidadArg).toBeGreaterThanOrEqual(mockEvent.precioMinimo);
+    expect(cantidadArg).toBeLessThanOrEqual(mockEvent.precioMaximo);
+
+    expect(userStorageServiceSpy.asociarEntrada).toHaveBeenCalledTimes(1);
+    const [emailArg, ticketArg] = userStorageServiceSpy.asociarEntrada.mock.calls[0];
+    expect(emailArg).toBe(mockLoggedInUser.email);
+    expect(ticketArg).toEqual({
+      eventId: mockEvent.id,
+      nombreEvento: mockEvent.nombre,
+      fecha: expect.any(String),
+      precioPagado: cantidadArg,
+    });
+
     expect(router.navigate).toHaveBeenCalledWith(['/confirmacion'], {
       state: { success: true, eventId: mockEvent.id },
     });

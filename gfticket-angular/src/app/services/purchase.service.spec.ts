@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 import { CardDataModel } from '../models/card-data.model';
 import { TicketPurchaseModel } from '../models/tickets-purchase.model';
 import { EventModel } from '../models/event.model';
-import { PurchaseService } from './purchase.service';
+import { PurchaseService, generarImporteCompra } from './purchase.service';
 
 describe('PurchaseService', () => {
     let service: PurchaseService;
@@ -151,7 +151,9 @@ describe('PurchaseService', () => {
     });
 
     it('sends the correct payload and returns the gateway confirmation on success', () => {
-        service.compraEntradas(mockTicketPurchase, mockEvent).subscribe((response) => {
+        const cantidad = 42.5;
+
+        service.compraEntradas(mockTicketPurchase, mockEvent, cantidad).subscribe((response) => {
             expect(response).toEqual(mockSuccessResponse);
         })
 
@@ -165,15 +167,13 @@ describe('PurchaseService', () => {
         expect(req.request.body.cvv).toBe(mockCardData.cvv);
         expect(req.request.body.emisor).toBe('GFTicket');
         expect(req.request.body.concepto).toBe(mockEvent.nombre);
-        const cantidad = Number(req.request.body.cantidad);
-        expect(cantidad).toBeGreaterThanOrEqual(mockEvent.precioMinimo);
-        expect(cantidad).toBeLessThanOrEqual(mockEvent.precioMaximo);
+        expect(req.request.body.cantidad).toBe(String(cantidad));
 
         req.flush(mockSuccessResponse);
     });
 
     it('propagates an error when the card is rejected by the gateway', () => {
-        service.compraEntradas(mockTicketPurchase, mockEvent).subscribe({
+        service.compraEntradas(mockTicketPurchase, mockEvent, 42.5).subscribe({
             next: () => fail('should not succeed'),
             error: (err) => {
                 expect(err.error).toEqual(mockInvalidCardResponse);
@@ -185,7 +185,7 @@ describe('PurchaseService', () => {
     });
 
     it('propagates an error when the payment system is unstable', () => {
-        service.compraEntradas(mockTicketPurchase, mockEvent).subscribe({
+        service.compraEntradas(mockTicketPurchase, mockEvent, 42.5).subscribe({
             next: () => fail('should not succeed'),
             error: (err) => {
                 expect(err.error).toEqual(mockUnstableSystemResponse);
@@ -194,6 +194,22 @@ describe('PurchaseService', () => {
 
         const req = httpMock.expectOne(`${environment.apiUrl}/pasarela/compra`);
         req.flush(mockUnstableSystemResponse, { status: 500, statusText: 'Internal Server Error' });
+    });
+
+    describe('generarImporteCompra', () => {
+        it('generates an amount within the event price range', () => {
+            for (let i = 0; i < 20; i++) {
+                const cantidad = generarImporteCompra(mockEvent);
+                expect(cantidad).toBeGreaterThanOrEqual(mockEvent.precioMinimo);
+                expect(cantidad).toBeLessThanOrEqual(mockEvent.precioMaximo);
+            }
+        });
+
+        it('returns the fixed price when precioMinimo equals precioMaximo', () => {
+            const eventoPrecioFijo: EventModel = { ...mockEvent, precioMinimo: 50, precioMaximo: 50 };
+
+            expect(generarImporteCompra(eventoPrecioFijo)).toBe(50);
+        });
     });
 
     it('returns a friendly message for an invalid card number (400.0003)', () => {
