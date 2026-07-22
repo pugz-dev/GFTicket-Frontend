@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { UserModel } from '../models/user.model';
+import { TicketModel } from '../models/ticket.model';
 import { UserStorageService } from './user-storage.service';
 
 describe('UserStorageService', () => {
@@ -12,6 +13,13 @@ describe('UserStorageService', () => {
     email: 'ana@test.com',
     password: 'secret123',
     telefono: '600111222',
+  };
+
+  const entrada: TicketModel = {
+    eventId: 1,
+    nombreEvento: 'Concierto de prueba',
+    fecha: '2026-07-22',
+    precioPagado: 30,
   };
 
   beforeEach(() => {
@@ -86,6 +94,38 @@ describe('UserStorageService', () => {
 
       const stored = JSON.parse(localStorage.getItem('usuarios') ?? '[]');
       expect(stored).toEqual([]);
+    });
+  });
+
+  describe('asociarEntrada', () => {
+    it('adds the ticket to the entradas list when the user has none yet', () => {
+      service.registrarUsuario(nuevoUsuario);
+
+      service.asociarEntrada(nuevoUsuario.email, entrada);
+
+      const stored: UserModel[] = JSON.parse(localStorage.getItem('usuarios') ?? '[]');
+      expect(stored[0].entradas).toEqual([entrada]);
+    });
+
+    it('appends to the existing entradas instead of overwriting them', () => {
+      service.registrarUsuario(nuevoUsuario);
+      const otraEntrada: TicketModel = { ...entrada, eventId: 2, nombreEvento: 'Otro evento' };
+
+      service.asociarEntrada(nuevoUsuario.email, entrada);
+      service.asociarEntrada(nuevoUsuario.email, otraEntrada);
+
+      const stored: UserModel[] = JSON.parse(localStorage.getItem('usuarios') ?? '[]');
+      expect(stored[0].entradas).toEqual([entrada, otraEntrada]);
+    });
+
+    it('does not affect other users in storage', () => {
+      service.registrarUsuario(nuevoUsuario);
+      service.registrarUsuario({ ...nuevoUsuario, email: 'otro@test.com' });
+
+      service.asociarEntrada(nuevoUsuario.email, entrada);
+
+      const stored: UserModel[] = JSON.parse(localStorage.getItem('usuarios') ?? '[]');
+      expect(stored.find((u) => u.email === 'otro@test.com')?.entradas).toBeUndefined();
     });
   });
 });
