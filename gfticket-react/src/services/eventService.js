@@ -1,6 +1,7 @@
 import {toEvento} from '../models/eventModel'
 
-const API_URL = 'http://teacherbanking.us-east-1.elasticbeanstalk.com/eventos';
+//Read API_URL from enviroment variable
+const API_URL = import.meta.env.VITE_API_URL;
 
 //All CRUD calls will need to handle the possible response errors in the same way
 async function handleResponse(response) {
