@@ -18,18 +18,22 @@ const MENSAJES_ERROR: Record<string, string> = {
     '500.0001': 'El sistema de pago no está disponible ahora mismo. Inténtalo de nuevo en unos minutos'
 };
 
+export function generarImporteCompra(event: EventModel): number {
+    return Math.random() * (event.precioMaximo - event.precioMinimo) + event.precioMinimo;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PurchaseService {
 
 
     private readonly http = inject(HttpClient);
 
-    compraEntradas(purchase: TicketPurchaseModel, event: EventModel): Observable<any> {
+    compraEntradas(purchase: TicketPurchaseModel, event: EventModel, cantidad: number): Observable<any> {
         const body = {
             ...purchase.cardData, /// "..." = Operador Spread, expande nombreTitular, numeroTarjeta, mesCaducidad, yearCaducidad y cvv como propiedades sueltas del nuevo objeto — evita que tengas que escribirlas una a una a mano. Es como el "builder pattern" pero sin builder, usando la sintaxis nativa de JS/TS
             emisor: 'GFTicket',
             concepto: event.nombre,
-            cantidad: String(Math.random() * (event.precioMaximo - event.precioMinimo) + event.precioMinimo),
+            cantidad: String(cantidad),
         }
 
         return this.http.post(`${environment.apiUrl}/pasarela/compra`, body);

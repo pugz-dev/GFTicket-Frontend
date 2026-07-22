@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EventModel } from '../../models/event.model';
 import { EventService } from '../../services/event.service';
-import { PurchaseService } from '../../services/purchase.service';
+import { PurchaseService, generarImporteCompra } from '../../services/purchase.service';
 import { TicketPurchaseModel } from '../../models/tickets-purchase.model';
 
 @Component({
@@ -72,7 +72,9 @@ export class Cart implements OnInit {
       },
     };
 
-    this.purchaseService.compraEntradas(purchase, this.event).subscribe({
+    const cantidad = generarImporteCompra(this.event);
+
+    this.purchaseService.compraEntradas(purchase, this.event, cantidad).subscribe({
       next: () => {
         this.router.navigate(['/confirmacion'], {
           state: { success: true, eventId: this.event!.id },

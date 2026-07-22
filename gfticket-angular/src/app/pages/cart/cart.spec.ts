@@ -157,20 +157,22 @@ describe('Cart', () => {
     component.form.setValue(validFormValue);
     component.onSubmit();
 
-    expect(purchaseServiceSpy.compraEntradas).toHaveBeenCalledWith(
-      {
-        email: validFormValue.email,
-        eventId: mockEvent.id,
-        cardData: {
-          nombreTitular: validFormValue.nombreTitular,
-          numeroTarjeta: validFormValue.numeroTarjeta,
-          mesCaducidad: validFormValue.mesCaducidad,
-          yearCaducidad: validFormValue.yearCaducidad,
-          cvv: validFormValue.cvv,
-        },
+    expect(purchaseServiceSpy.compraEntradas).toHaveBeenCalledTimes(1);
+    const [purchaseArg, eventArg, cantidadArg] = purchaseServiceSpy.compraEntradas.mock.calls[0];
+    expect(purchaseArg).toEqual({
+      email: validFormValue.email,
+      eventId: mockEvent.id,
+      cardData: {
+        nombreTitular: validFormValue.nombreTitular,
+        numeroTarjeta: validFormValue.numeroTarjeta,
+        mesCaducidad: validFormValue.mesCaducidad,
+        yearCaducidad: validFormValue.yearCaducidad,
+        cvv: validFormValue.cvv,
       },
-      mockEvent,
-    );
+    });
+    expect(eventArg).toEqual(mockEvent);
+    expect(cantidadArg).toBeGreaterThanOrEqual(mockEvent.precioMinimo);
+    expect(cantidadArg).toBeLessThanOrEqual(mockEvent.precioMaximo);
     expect(router.navigate).toHaveBeenCalledWith(['/confirmacion'], {
       state: { success: true, eventId: mockEvent.id },
     });
