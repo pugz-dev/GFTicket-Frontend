@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach} from 'vitest';
 import { getEvents, getEventById, createEvent, updateEventById, deleteEventById } from './eventService';
 import { toEvento } from '../models/eventModel';
 
-const API_URL = 'http://teacherbanking.us-east-1.elasticbeanstalk.com/eventos';
+const API_URL = import.meta.env.VITE_API_URL;
 
 //Mock global function 'fetch'
 beforeEach(() => {
