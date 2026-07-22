@@ -6,6 +6,9 @@ import { EventModel } from '../../models/event.model';
 import { EventService } from '../../services/event.service';
 import { PurchaseService, generarImporteCompra } from '../../services/purchase.service';
 import { TicketPurchaseModel } from '../../models/tickets-purchase.model';
+import { AuthService } from '../../services/auth.service';
+import { UserStorageService } from '../../services/user-storage.service';
+import { TicketModel } from '../../models/ticket.model';
 
 @Component({
   selector: 'app-cart',
@@ -19,6 +22,8 @@ export class Cart implements OnInit {
   private readonly router = inject(Router);
   private readonly eventService = inject(EventService);
   private readonly purchaseService = inject(PurchaseService);
+  private readonly authService = inject(AuthService);
+  private readonly userStorageService = inject(UserStorageService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   event: EventModel | null = null;
@@ -76,8 +81,17 @@ export class Cart implements OnInit {
 
     this.purchaseService.compraEntradas(purchase, this.event, cantidad).subscribe({
       next: () => {
+        const ticket: TicketModel = {
+          eventId: purchase.eventId,
+          nombreEvento: this.event!.nombre,
+          fecha: new Date().toISOString(),
+          precioPagado: cantidad
+        }
+
+        this.userStorageService.asociarEntrada(this.authService.usuarioActual()!.email, ticket);
         this.router.navigate(['/confirmacion'], {
           state: { success: true, eventId: this.event!.id },
+
         });
       },
       error: (err) => {
