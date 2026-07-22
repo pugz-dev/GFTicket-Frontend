@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
+import { AuthService } from '../../services/auth.service';
 import { UserStorageService } from '../../services/user-storage.service';
 
 const TELEFONO_PATTERN = /^[0-9]{9}$/;
@@ -16,6 +17,7 @@ const TELEFONO_PATTERN = /^[0-9]{9}$/;
 export class Register {
   private readonly fb = inject(FormBuilder);
   private readonly userStorageService = inject(UserStorageService);
+  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
   submitted = false;
@@ -36,7 +38,10 @@ export class Register {
       return;
     }
 
+    const { email, password } = this.form.getRawValue();
+
     this.userStorageService.registrarUsuario(this.form.getRawValue());
+    this.authService.loginUsuario({ email, password });
     this.router.navigateByUrl('/');
   }
 }

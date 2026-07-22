@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 
+import { AuthService } from '../../services/auth.service';
 import { Register } from './register';
 
 describe('Register', () => {
@@ -141,6 +142,15 @@ describe('Register', () => {
       component.onSubmit();
 
       expect(router.navigateByUrl).toHaveBeenCalledWith('/');
+    });
+
+    it('logs the new user in automatically', () => {
+      fillValidForm();
+      component.onSubmit();
+
+      const authService = TestBed.inject(AuthService);
+      expect(authService.estaAutenticado()).toBe(true);
+      expect(authService.usuarioActual()?.email).toBe(usuarioValido.email);
     });
   });
 });
