@@ -40,7 +40,10 @@
   </div>
 } @else if (error) {
   <div class="page state state--error">
-    <p class="state__message">Hubo un error al cargar los eventos.</p>
+    <div class="state__icon">!</div>
+    <h2 class="state__title">No hemos podido cargar los eventos</h2>
+    <p class="state__message">Ha ocurrido un error al conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.</p>
+    <button class="state__retry" type="button" (click)="reintentar()">Reintentar</button>
   </div>
 } @else {
   <div class="page">
@@ -49,13 +52,23 @@
       <h1 class="hero__title">Próximos conciertos<br />y eventos en vivo</h1>
       <div class="event-list__search-wrapper">
         <input
-          class="event-list__search"
+          class="event-list__search-name"
           type="text"
           placeholder="Buscar por nombre..."
-          (input)="onSearchChange($event)"
+          [(ngModel)]="searchTerm" 
+          (ngModelChange)="onSearchChange($event)"
         />
+        <select class="event-list__search-locality" name="locality"
+          [(ngModel)]="selectedLocality"
+          (ngModelChange)="onLocalityChange($event)">
+          <option value="" selected disabled hidden>Buscar por Localidad</option>
+          @for(locality of localities; track locality){
+            <option value="{{locality}}">{{locality}}</option>
+          }
+        </select>
+        <button (click) ="clearFilters()">Clear Filters</button>
       </div>
     </div>
-    <app-event-catalog [events]="events" />
+    <app-event-catalog [events]="filteredEvents" />
   </div>
 }
