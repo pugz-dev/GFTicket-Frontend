@@ -110,5 +110,61 @@ describe('Perfil', () => {
       const compiled = fixture.nativeElement as HTMLElement;
       expect(compiled.textContent).toContain('Los cambios se han guardado correctamente.');
     });
+
+    it('persists the selected photo', () => {
+      component.fotoPreview = 'data:image/png;base64,xyz';
+
+      component.onSubmit();
+
+      const stored = JSON.parse(localStorage.getItem('usuarios') ?? '[]');
+      expect(stored[0].foto).toBe('data:image/png;base64,xyz');
+    });
+  });
+
+  describe('foto de perfil', () => {
+    it('has no preview by default when the user has not set a photo', () => {
+      expect(component.fotoPreview).toBeNull();
+    });
+
+    it('preloads the photo already saved for the user', () => {
+      const usuarioActual = authService.usuarioActual()!;
+      const actualizado = userStorageService.actualizarUsuario(usuarioActual.id, {
+        foto: 'data:image/png;base64,xyz',
+      });
+      authService.actualizarUsuarioActual(actualizado!);
+
+      const otraFixture = TestBed.createComponent(Perfil);
+      otraFixture.detectChanges();
+
+      expect(otraFixture.componentInstance.fotoPreview).toBe('data:image/png;base64,xyz');
+    });
+
+    it('updates the preview once a valid image is read', async () => {
+      const archivo = new File(['contenido'], 'foto.png', { type: 'image/png' });
+      const input = document.createElement('input');
+      Object.defineProperty(input, 'files', { value: [archivo] });
+
+      component.onFotoSeleccionada({ target: input } as unknown as Event);
+
+      for (let intentos = 0; intentos < 20 && component.fotoPreview === null; intentos++) {
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      }
+
+      expect(component.fotoPreview).toMatch(/^data:/);
+      expect(component.fotoError).toBe(false);
+    });
+
+    it('rejects images larger than 2MB', () => {
+      const archivoGrande = new File([new Uint8Array(3 * 1024 * 1024)], 'foto.png', {
+        type: 'image/png',
+      });
+      const input = document.createElement('input');
+      Object.defineProperty(input, 'files', { value: [archivoGrande] });
+
+      component.onFotoSeleccionada({ target: input } as unknown as Event);
+
+      expect(component.fotoError).toBe(true);
+      expect(component.fotoPreview).toBeNull();
+    });
   });
 });
