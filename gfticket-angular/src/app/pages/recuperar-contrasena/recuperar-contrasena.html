@@ -1,0 +1,37 @@
+<div class="recuperar">
+  <div class="recuperar__card">
+    <a class="back-link" routerLink="/login">
+      <span class="back-link__icon">←</span>
+      Volver
+    </a>
+
+    <h1 class="recuperar__title">Recuperar contraseña</h1>
+    <p class="recuperar__subtitle">Introduce tu email y te mostraremos tu contraseña.</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" />
+        @if (form.controls.email.invalid && (form.controls.email.touched || submitted)) {
+          <p class="field__error">
+            @if (form.controls.email.hasError('required')) {
+              El email es obligatorio.
+            } @else if (form.controls.email.hasError('email')) {
+              Introduce un email válido.
+            }
+          </p>
+        }
+      </div>
+
+      @if (contrasenaEncontrada) {
+        <p class="recuperar__success">Tu contraseña es: <strong>{{ contrasenaEncontrada }}</strong></p>
+      }
+
+      @if (noEncontrado) {
+        <p class="field__error">No existe ninguna cuenta con ese email.</p>
+      }
+
+      <button type="submit" class="recuperar__submit">Recuperar contraseña</button>
+    </form>
+  </div>
+</div>
