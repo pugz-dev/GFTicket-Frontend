@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { EventModel } from "../../models/event.model";
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 const MONTH_ABBRS = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
 
@@ -12,6 +13,7 @@ const MONTH_ABBRS = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SE
 })
 export class EventCatalog {
   @Input() events: EventModel[] = [];
+  readonly authService = inject(AuthService);
 
   dayNum(event: EventModel): number {
     return new Date(event.fechaEvento).getDate();

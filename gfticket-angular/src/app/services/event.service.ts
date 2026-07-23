@@ -12,22 +12,23 @@ export class EventService {
 
 
   getEventById(id: string): Observable<EventModel> {
-    return this.http.get<EventModel>(`${environment.apiUrl}/eventos/${id}`);
+    return this.http.get<EventModel>(`${environment.apiUrl}/eventos/${id}`).pipe(
+      map((evento) => ({
+        ...evento,
+        precioMinimo: Math.abs(evento.precioMinimo),
+        precioMaximo: Math.abs(evento.precioMaximo),
+      }))
+    );
   }
 
   getEventos(): Observable<EventModel[]> {
-    return this.http.get<EventModel[]>(`${environment.apiUrl}/eventos`);
-  }
-
-  getEventosByName(name: string): Observable<EventModel[]> {
-    const busqueda = name.trim().toLowerCase();
-
-    return this.getEventos().pipe(
+    return this.http.get<EventModel[]>(`${environment.apiUrl}/eventos`).pipe(
       map((eventos) =>
-        busqueda === ''
-          ? eventos
-          : eventos.filter((evento) => evento.nombre.toLowerCase().includes(busqueda))
-      )
-    );
+        eventos.map(evento => ({
+          ...evento,
+          precioMinimo: Math.abs(evento.precioMinimo),
+          precioMaximo: Math.abs(evento.precioMaximo),
+        }))
+      ));
   }
 }
