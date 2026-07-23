@@ -27,10 +27,12 @@ export class EventList implements OnInit {
   menuOpen = false;
   
   localities : string[] = [];
+  genres : string[] = [];
 
-  //values of the filters
+  //filter values
   searchTerm = '';
   selectedLocality = '';
+  selectedGenre = '';
 
   ngOnInit(): void {
     this.cargarEventos();
@@ -52,6 +54,7 @@ export class EventList implements OnInit {
         this.cdr.markForCheck();
 
         this.localities = this.getLocalities();
+        this.genres = this.getGenres();
       },
       error: (err) => {
         this.allEvents = [];
@@ -70,6 +73,23 @@ export class EventList implements OnInit {
     this.allEvents.map(event => inputSet.add(
       //Save all localities with only first letter capitalized
       event.localidad.charAt(0).toUpperCase() + event.localidad.slice(1).toLowerCase()
+    ));
+    let res = Array.from(inputSet);
+    //Sort alphabetically
+    res.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+    return Array.from(res);
+  }
+
+  getGenres() : string[]{
+    let inputSet : Set<string> = new Set(); 
+    
+    //Save all genres with only first letter capitalized
+        //Multiple genres are saved as "genre_1/genre_2", so we split it to avoid repetitions
+    this.allEvents.map(event => 
+      event.genero.split('/').map(genero => 
+        inputSet.add(genero.charAt(0).toUpperCase() + genero.slice(1).toLowerCase()
+      )
     ));
     let res = Array.from(inputSet);
     //Sort alphabetically
@@ -103,11 +123,14 @@ export class EventList implements OnInit {
   private applyFilters(): void {
     const name = this.searchTerm.trim().toLowerCase();
     const locality = this.selectedLocality;
+    const genre = this.selectedGenre;
 
     this.filteredEvents = this.allEvents.filter(event => {
       const matchesName = name === '' || event.nombre.toLowerCase().includes(name);
       const matchesLocality = locality === '' || event.localidad.toLowerCase() === locality.toLowerCase();
-      return matchesName && matchesLocality;   // add the 3rd filter here later
+      //Multiple genres are saved as "genre_1/genre_2", split it to find at least one match
+      const matchesGenre = genre === '' || event.genero.split('/').includes(genre);
+      return matchesName && matchesLocality && matchesGenre;   // add the 3rd filter here later
     });
 
     this.cdr.markForCheck();
@@ -120,6 +143,11 @@ export class EventList implements OnInit {
 
   onLocalityChange(value: string): void {
     this.selectedLocality = value;
+    this.applyFilters();
+  }
+
+  onGenreChange(value: string): void {
+    this.selectedGenre = value;
     this.applyFilters();
   }
 }
