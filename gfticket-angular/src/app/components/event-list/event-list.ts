@@ -25,6 +25,16 @@ export class EventList implements OnInit {
   menuOpen = false;
 
   ngOnInit(): void {
+    this.cargarEventos();
+  }
+
+  reintentar(): void {
+    this.loading = true;
+    this.error = false;
+    this.cargarEventos();
+  }
+
+  private cargarEventos(): void {
     this.eventService.getEventos().subscribe({
       next: (events) => {
         this.events = events;
