@@ -4,12 +4,12 @@ A monorepo containing two independent frontend applications for the **GFTicket**
 
 ## Project Overview
 
-**GFTicket** is a full-stack MVP (minimum viable product) that allows users to browse and purchase tickets for live events (concerts, festivals, theater shows, etc.). This repository contains the client-side implementations:
+**GFTicket** is a full-stack MVP that lets users browse events, register/log in, and simulate the purchase of tickets. This repository contains the client-side implementations:
 
-- **gfticket-angular**: Public-facing web application (event listing, event detail, user registration, purchase flow, user profile).
+- **gfticket-angular**: Public-facing web application — event catalog (with name/locality/genre filters), event detail, registration, login, profile editing, simulated purchase flow, purchase confirmation, and a "my tickets" page.
 - **gfticket-react**: Admin panel for event management (CRUD operations on events).
 
-The backend (REST API) is maintained by a separate team and is already deployed. This frontend consumes that API with no mocks.
+The backend (a real REST API, maintained by a separate team) is already deployed. This frontend consumes it directly — **no mocks**. User accounts and purchased tickets are simulated client-side in `localStorage` (there is no backend auth endpoint yet); only event data and the payment gateway call hit the real API.
 
 **Timeline**: Sprint 1 (13–15 July) · Sprint 2 (16–20 July) · Sprint 3 (21–24 July) + presentation.
 
@@ -17,18 +17,22 @@ The backend (REST API) is maintained by a separate team and is already deployed.
 
 ```
 GFTicket-Frontend/
-├── gfticket-angular/          # Angular 22 app (public web)
+├── gfticket-angular/          # Angular 22+ app (public web)
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── components/    # Reusable components (event-catalog, event-list, etc.)
-│   │   │   ├── pages/         # Route-level pages (public-home, event-detail)
-│   │   │   ├── services/      # Business logic (event-service)
+│   │   │   ├── components/    # Reusable components (event-catalog, event-list)
+│   │   │   ├── pages/         # Route-level pages (public-home, event-detail,
+│   │   │   │                  #   login, register, perfil, cart,
+│   │   │   │                  #   confirmation-purchase, mis-entradas)
+│   │   │   ├── services/      # event, auth, purchase, user-storage
+│   │   │   ├── guards/        # auth.guard (protects carrito/perfil/mis-entradas... — see app.routes.ts)
 │   │   │   ├── models/        # TypeScript interfaces
 │   │   │   ├── app.routes.ts  # Application routing
 │   │   │   └── app.ts         # Root component
+│   │   ├── environments/      # apiUrl config (dev/prod)
 │   │   ├── styles.css         # Global styles
 │   │   └── index.html
-│   ├── jest.config.js         # Jest testing configuration
+│   ├── jest.config.js         # Jest testing configuration (per-folder coverage thresholds)
 │   ├── angular.json
 │   └── README.md
 ├── gfticket-react/            # React + Vite app (admin panel)
@@ -41,7 +45,8 @@ GFTicket-Frontend/
 │   └── README.md
 ├── .github/
 │   └── workflows/
-│       └── commit-lint.yml    # CI: validates commits on PRs
+│       ├── commit-lint.yml    # CI: validates commit messages on PRs to main
+│       └── coverage.yml       # CI: runs the test suite (with coverage) for both apps on PRs to main
 ├── .gitignore
 └── README.md (this file)
 ```
@@ -50,7 +55,7 @@ GFTicket-Frontend/
 
 ### Prerequisites
 
-- **Node.js** 18+ and **npm** 9+ (or **pnpm**).
+- **Node.js** 18+ and **npm** 9+.
 - **Git** configured with valid credentials for the GitHub repo.
 
 ### Installation
@@ -102,7 +107,6 @@ cd gfticket-angular
 npm start          # Start dev server
 npm run build      # Compile to dist/
 npm test           # Run Jest tests with coverage
-npm test -- --no-coverage  # Run tests without coverage report
 ```
 
 **React app:**
@@ -121,143 +125,116 @@ All commits and branches must follow strict naming conventions so that Jira auto
 
 ### Commit Messages
 
-Format: **Conventional Commits** with Jira scope.
+Format: **Conventional Commits** with a Jira scope.
 
 ```
 <type>(<scope>): <description>
 ```
 
-**Types**: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `ci`
+**Types**: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`
 
 **Examples**:
 ```
-feat(SCRUM-54): implement event catalog grid
-fix(SCRUM-87): correct date formatting in event detail
-test: update assertions for date display format
-chore: upgrade Angular to 22.0.6
+feat(SCRUM-430): add fast purchase button to the event catalog
+fix(SCRUM-398): show event and purchase dates in mis-entradas
+chore: reformat date in tickets page
 ```
 
-**Important**: Commit messages are **always in English**, even though team communication is in Spanish.
+**Important**: Commit messages are **always in English**, even though team communication is in Spanish. Enforced by the `commit-lint` workflow on every PR to `main` (`@commitlint/config-conventional` — type is required, scope is optional).
 
 ### Branch Names
 
 Format:
 ```
-<type>/<SCRUM-id>/<SCRUM-id>-short-description
+feature/<SCRUM-id>/<SCRUM-id>-short-description
 ```
 
 **Examples**:
 ```
-feature/SCRUM-54/SCRUM-60-listado-eventos-service
-fix/SCRUM-87/SCRUM-88-fix-event-detail-date
+feature/SCRUM-258/SCRUM-295-associate-bought-ticket-to-the-user
+feature/SCRUM-400-fast-purchase-from-the-catalog
 ```
 
-**Note**: Each branch should correspond to a Jira subtask. If you don't have a Jira ID, use a descriptive name without the ID (e.g., `feature/setup-eslint`).
+**Note**: Each branch should correspond to a Jira subtask. If there's no Jira ID yet (e.g. a quick chore branch), use a descriptive name without the ID.
 
 ### Pull Request Process
 
 1. Create a feature branch from `main`.
-2. Commit with conventional format (enforced by `commit-lint` workflow).
+2. Commit with conventional format (enforced by `commit-lint`).
 3. Push and open a PR against `main`.
 4. Ensure:
-   - All status checks pass (linting, tests, commit lint).
+   - All status checks pass (`commit-lint`, `coverage` — tests for both apps).
    - At least 1 approval from a team member.
    - All conversations resolved.
+   - The branch is up to date with `main`.
 5. Merge with a **merge commit** (no squash).
 
 ## Testing
 
-Both applications use automated testing to ensure quality. Tests must pass before merging to `main`.
+Both applications use automated testing to ensure quality. Tests must pass before merging to `main`, and unit tests should be written **before implementation** (TDD).
 
 ### Angular (Jest)
 
 ```bash
 cd gfticket-angular
 
-# Run all tests
-npm test
-
-# Run with coverage report
-npm test -- --coverage
-
-# Run tests in watch mode
-npm test -- --watch
-
-# Run specific test file
-npm test -- event-catalog.spec.ts
+npm test                       # Run all tests with coverage
+npm test -- src/app/pages/cart # Run a specific folder/file
 ```
 
-**Coverage expectations**: Aim for >80% overall. All components and services should have unit tests written **before implementation** (TDD approach).
+**Coverage thresholds** (enforced in `jest.config.js`, per folder): services 70%, components 50%. Overall coverage is reported on every PR by the `coverage` workflow.
 
-**Test file location**: Co-locate with source files. E.g., `event-catalog.ts` and `event-catalog.spec.ts` in the same folder.
+**Test file location**: co-located with source files, e.g. `event-catalog.ts` and `event-catalog.spec.ts` in the same folder.
 
 ### React (Vitest)
 
 ```bash
 cd gfticket-react
 
-# Run all tests
-npm test
-
-# Run in watch mode
-npm test -- --watch
-
-# Run with coverage
-npm test -- --coverage
+npm test               # Run all tests
+npm test -- --coverage # Run with coverage
 ```
 
 ## Architecture & Patterns
 
 ### Angular App
 
-**Structure**: Standalone components (Angular 14+ style, no NgModules).
+**Structure**: standalone components (no NgModules), functional route guards, signals for reactive auth state.
 
-**Key Patterns**:
-- **Services**: Use dependency injection for API calls and business logic. Example: `EventService` fetches events from the backend.
-- **Components**: Presentational components receive data via `@Input()` and emit actions via `@Output()`. Container/smart components manage state and call services.
-- **Routing**: Defined in `app.routes.ts`. Lazy-loaded components where applicable.
-- **Styling**: Component-scoped CSS files + global `styles.css`. Uses a dark theme with OKLCH color system.
+**Key patterns**:
+- **Services**: dependency-injected, own API calls and business logic (`EventService`, `PurchaseService`) or the simulated user/session storage (`AuthService`, `UserStorageService`).
+- **Auth**: fully simulated client-side — `UserStorageService` keeps the user list in `localStorage`; `AuthService` exposes the logged-in user as a signal (`usuarioActual`) and is read directly in templates.
+- **Routing**: defined in `app.routes.ts`, lazy-loaded per route (`loadComponent`). Sensitive routes (`carrito/:id`, `perfil`) use `authGuard` to require a session.
+- **Styling**: component-scoped CSS + a shared dark theme built on OKLCH colors (see the Angular app's own README for the palette).
 
-**Example component structure**:
-```
-src/app/components/event-catalog/
-├── event-catalog.ts          # Component definition
-├── event-catalog.html        # Template
-├── event-catalog.css         # Styles
-└── event-catalog.spec.ts     # Unit tests
-```
+See [gfticket-angular/README.md](gfticket-angular/README.md) for the full breakdown (project structure, testing, API integration, design system).
 
 ### React App
 
-**Structure**: Functional components with hooks.
+**Structure**: functional components with hooks.
 
-**Key Patterns**:
-- **Services**: Custom hooks for API calls (e.g., `useEventService()`).
-- **State Management**: React hooks (`useState`, `useContext`) for local/global state.
-- **Components**: Atomic design approach (atoms, molecules, organisms).
-- **Styling**: CSS-in-JS or scoped CSS modules.
+**Key patterns**:
+- **Services**: custom hooks / fetch calls for the admin API.
+- **State management**: React hooks (`useState`, `useContext`).
+- **Components**: atomic design approach (atoms, molecules, organisms).
 
 ## API Integration
 
-Both apps consume a **shared backend REST API**. The API is already deployed and maintained by a separate team.
+Both apps consume a **shared backend REST API**, already deployed and maintained by a separate team — a "TeacherBanking" academic environment, not a production service, so occasional downtime is expected.
 
-**Base URL** (from environment config):
+**Base URL** (from `environment.ts`):
 ```
-https://api.gfticket.example.com/v1
+http://teacherbanking.us-east-1.elasticbeanstalk.com
 ```
 
-**Key endpoints** (used by frontend):
-- `GET /eventos` — List all events
-- `GET /eventos/:id` — Get event detail
-- `POST /eventos` — Create event (admin only)
-- `PUT /eventos/:id` — Update event (admin only)
-- `DELETE /eventos/:id` — Delete event (admin only)
+**Endpoints actually used by the Angular app**:
+- `GET /eventos` — list all events
+- `GET /eventos/:id` — get event detail
+- `POST /pasarela/compra` — submit a simulated card payment for a ticket purchase
 
-**API Integration in code**:
-- Angular: Use `HttpClient` (injected in services).
-- React: Use `fetch()` or axios inside hooks/services.
+There is currently **no backend endpoint for users/auth** — registration, login, and purchased-ticket history are all simulated in `localStorage` on the client (see `UserStorageService`/`AuthService`). The React admin panel's CRUD endpoints for events are documented in its own README.
 
-**No mocks in development** — always use the real API. This ensures frontend and backend are tested together early.
+**No mocks for event/payment data** — always test against the real API.
 
 ## Deployment
 
@@ -275,10 +252,10 @@ A feature is **not considered complete** until:
 
 1. ✅ The algorithm/functionality works as specified.
 2. ✅ Manually verified in the browser that it does what was requested.
-3. ✅ Unit tests are written (spec file exists, tests pass).
+3. ✅ Unit tests are written **before implementation** (spec file exists, tests pass).
 4. ✅ CSS/design is responsive (mobile, tablet, desktop).
 5. ✅ Necessary documentation is updated.
-6. ✅ Code is committed with proper message and pushed.
+6. ✅ Code is committed with a proper message and pushed.
 7. ✅ Jira issue is updated (moved to Done).
 8. ✅ PR is merged to `main`.
 
@@ -324,13 +301,13 @@ cd gfticket-react && npm install
 
 1. **Pick a Jira ticket** from the sprint backlog.
 2. **Create a feature branch** with the Jira ID (see Git Conventions above).
-3. **Implement the feature** (code + tests + CSS).
+3. **Implement the feature** — tests first, then code + CSS.
 4. **Verify locally**: dev server runs, tests pass, responsive design works.
 5. **Commit and push** with a conventional message.
 6. **Open a PR** against `main` and request review.
 7. **Address feedback** and merge when approved.
 
-For questions about technical decisions or architecture, ask your Scrum Master or team lead. The backend API documentation is available at [link-to-API-docs] (if applicable).
+For questions about technical decisions or business requirements, ask the teacher — not an AI assistant.
 
 ## Team
 
