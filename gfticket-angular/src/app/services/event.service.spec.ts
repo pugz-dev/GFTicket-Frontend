@@ -235,4 +235,35 @@ describe('EventService', () => {
     req.flush('simulated error', { status: 500, statusText: 'Server Error' });
   });
 
+
+  //getEventosByCiudad
+  it('returns all the events when the input locality is blank', () => {
+    service.getEventosByLocality('').subscribe((events) => {
+      expect(events).toEqual(mockEvents);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockEvents);
+  });
+
+  it('returns an empty array when no event matches the locality', () => {
+    service.getEventosByLocality('9999').subscribe((events) => {
+      expect(events).toEqual([]);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos`);
+    req.flush(mockEvents);
+  });
+
+  it('returns events whose name contains the search text (exact match)', () => {
+    service.getEventosByName('Rock').subscribe((events) => {
+      expect(events).toEqual([mockEvents[0]]);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockEvents);
+  });
+
 });
