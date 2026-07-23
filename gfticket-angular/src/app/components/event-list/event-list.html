@@ -54,10 +54,32 @@
     <span class="hero__label">En directo</span>
     <h1 class="hero__title">Próximos conciertos<br />y eventos en vivo</h1>
     <div class="event-list__search-wrapper">
-      <input class="event-list__search" type="text" placeholder="Buscar por nombre..."
-        (input)="onSearchChange($event)" />
+      <input
+        class="event-list__search-name"
+        type="text"
+        placeholder="Buscar por nombre..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange($event)"
+      />
+      <select class="event-list__search-select" name="locality"
+        [(ngModel)]="selectedLocality"
+        (ngModelChange)="onLocalityChange($event)">
+        <option class="event-list__search-select-option" value="" selected disabled hidden>Buscar por localidad...</option>
+        @for(locality of localities; track locality){
+          <option class="event-list__search-select-option" value="{{locality}}">{{locality}}</option>
+        }
+      </select>
+      <select class="event-list__search-select" name="genre"
+        [(ngModel)]="selectedGenre"
+        (ngModelChange)="onGenreChange($event)">
+        <option class="event-list__search-select-option" value="" selected disabled hidden>Buscar por género...</option>
+        @for(genre of genres; track genre){
+          <option class="event-list__search-select-option" value="{{genre}}">{{genre}}</option>
+        }
+      </select>
+      <button class="event-list__clear" type="button" (click)="clearFilters()">Limpiar filtros</button>
     </div>
   </div>
-  <app-event-catalog [events]="events" />
+  <app-event-catalog [events]="filteredEvents" />
 </div>
 }
