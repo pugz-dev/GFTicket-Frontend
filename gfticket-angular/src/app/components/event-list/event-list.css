@@ -148,7 +148,7 @@
 .event-list__search-wrapper {
   position: relative;
   margin-top: 28px;
-  max-width: 720px;
+  max-width: 900px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -194,7 +194,7 @@
 /* Locality select: same pill/surface treatment as the name input. The native
    dropdown arrow is hidden (appearance: none) and replaced by an SVG chevron so
    the control is fully themeable; right padding leaves room for it. */
-.event-list__search-locality {
+.event-list__search-select {
   flex: 1 1 180px;
   padding: 13px 44px 13px 20px;
   background:
@@ -212,7 +212,7 @@
   transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.event-list__search-locality:focus {
+.event-list__search-select:focus {
   outline: none;
   border-color: var(--color-accent);
   background-color: oklch(0.24 0.02 280);
@@ -221,12 +221,12 @@
 
 /* While the disabled placeholder option is the selection, mute the text to match
    the input's ::placeholder colour (:has checks which option is currently chosen) */
-.event-list__search-locality:has(option[value='']:checked) {
+.event-list__search-select:has(option[value='']:checked) {
   color: var(--color-text-muted);
 }
 
 /* The open dropdown list: force the dark surface instead of the OS default white */
-.event-list__search-locality-option {
+.event-list__search-select-option {
   background: var(--color-surface);
   color: var(--color-text);
 }
