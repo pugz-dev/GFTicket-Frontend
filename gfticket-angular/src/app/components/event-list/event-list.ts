@@ -117,7 +117,8 @@ export class EventList implements OnInit {
   clearFilters(): void {
     this.searchTerm = '';
     this.selectedLocality = '';
-    this.applyFilters(); // re-fetch the full list
+    this.selectedGenre = '';
+    this.applyFilters(); // reset the filtered list
   }
 
   private applyFilters(): void {
