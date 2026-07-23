@@ -3,11 +3,11 @@ import { RouterLink } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 import { TicketModel } from '../../models/ticket.model';
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-mis-entradas',
-  imports: [RouterLink, DatePipe],
+  imports: [RouterLink, DatePipe, DecimalPipe],
   templateUrl: './mis-entradas.html',
   styleUrl: './mis-entradas.css',
 })

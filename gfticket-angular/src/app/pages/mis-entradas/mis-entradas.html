@@ -6,7 +6,7 @@
     <div class="entrada">
       <h2 class="entrada__titulo">{{ entrada.nombreEvento }}</h2>
       <span class="entrada__fecha">{{ entrada.fecha | date:'dd MM yyyy' }}</span>
-      <span class="entrada__precio">{{ entrada.precioPagado }} €</span>
+      <span class="entrada__precio">{{ entrada.precioPagado | number:'1.0-2' }} €</span>
     </div>
     }
   </div>
