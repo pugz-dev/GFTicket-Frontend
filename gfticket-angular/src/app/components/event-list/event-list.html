@@ -58,12 +58,20 @@
           [(ngModel)]="searchTerm" 
           (ngModelChange)="onSearchChange($event)"
         />
-        <select class="event-list__search-locality" name="locality"
+        <select class="event-list__search-select" name="locality"
           [(ngModel)]="selectedLocality"
           (ngModelChange)="onLocalityChange($event)">
-          <option class="event-list__search-locality-option" value="" selected disabled hidden>Buscar por Localidad</option>
+          <option class="event-list__search-select-option" value="" selected disabled hidden>Buscar por localidad...</option>
           @for(locality of localities; track locality){
-            <option class="event-list__search-locality-option" value="{{locality}}">{{locality}}</option>
+            <option class="event-list__search-select-option" value="{{locality}}">{{locality}}</option>
+          }
+        </select>
+        <select class="event-list__search-select" name="genre"
+          [(ngModel)]="selectedGenre"
+          (ngModelChange)="onGenreChange($event)">
+          <option class="event-list__search-select-option" value="" selected disabled hidden>Buscar por género...</option>
+          @for(genre of genres; track genre){
+            <option class="event-list__search-select-option" value="{{genre}}">{{genre}}</option>
           }
         </select>
         <button class="event-list__clear" type="button" (click)="clearFilters()">Limpiar filtros</button>
