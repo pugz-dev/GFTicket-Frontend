@@ -21,6 +21,11 @@
             <span class="event-card__venue">{{ event.nombreRecinto }} ({{ event.localidad }})</span>
             <span class="event-card__price">Desde {{ event.precioMinimo }} €</span>
         </div>
+        @if (authService.estaAutenticado()) {
+        <button class="event-card__buy-button" [routerLink]="['/carrito', event.id]"
+            (click)="$event.stopPropagation(); $event.preventDefault()">Comprar</button>
+        }
+
     </div>
 </a>
 }
