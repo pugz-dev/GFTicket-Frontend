@@ -97,6 +97,46 @@ describe('UserStorageService', () => {
     });
   });
 
+  describe('actualizarUsuario', () => {
+    it('updates the given fields and persists them in localStorage', () => {
+      const creado = service.registrarUsuario(nuevoUsuario);
+
+      service.actualizarUsuario(creado.id, { nombre: 'Ana Maria', telefono: '699888777' });
+
+      const stored: UserModel[] = JSON.parse(localStorage.getItem('usuarios') ?? '[]');
+      expect(stored[0]).toEqual({
+        ...nuevoUsuario,
+        id: creado.id,
+        nombre: 'Ana Maria',
+        telefono: '699888777',
+      });
+    });
+
+    it('returns the updated user', () => {
+      const creado = service.registrarUsuario(nuevoUsuario);
+
+      const result = service.actualizarUsuario(creado.id, { nombre: 'Ana Maria' });
+
+      expect(result).toEqual({ ...nuevoUsuario, id: creado.id, nombre: 'Ana Maria' });
+    });
+
+    it('returns null when no user matches the given id', () => {
+      const result = service.actualizarUsuario(999, { nombre: 'Ana Maria' });
+
+      expect(result).toBeNull();
+    });
+
+    it('does not affect other users in storage', () => {
+      const primero = service.registrarUsuario(nuevoUsuario);
+      const segundo = service.registrarUsuario({ ...nuevoUsuario, email: 'otro@test.com' });
+
+      service.actualizarUsuario(primero.id, { nombre: 'Ana Maria' });
+
+      const stored: UserModel[] = JSON.parse(localStorage.getItem('usuarios') ?? '[]');
+      expect(stored.find((u) => u.id === segundo.id)?.nombre).toBe(nuevoUsuario.nombre);
+    });
+  });
+
   describe('asociarEntrada', () => {
     it('adds the ticket to the entradas list when the user has none yet', () => {
       service.registrarUsuario(nuevoUsuario);
