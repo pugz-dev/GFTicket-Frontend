@@ -30,6 +30,11 @@ export const routes: Routes = [
     },
 
     {
+        path: 'recuperar-contrasena',
+        loadComponent: () => import('./pages/recuperar-contrasena/recuperar-contrasena').then(m => m.RecuperarContrasena)
+    },
+
+    {
         path: 'perfil',
         loadComponent: () => import('./pages/perfil/perfil').then(m => m.Perfil),
         canActivate: [authGuard]
