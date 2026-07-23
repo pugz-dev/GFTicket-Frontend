@@ -110,6 +110,44 @@ describe('UserStorageService', () => {
     });
   });
 
+  describe('recuperarContrasena', () => {
+    it('returns the password when the email matches a registered user', () => {
+      service.registrarUsuario(nuevoUsuario);
+
+      const result = service.recuperarContrasena(nuevoUsuario.email);
+
+      expect(result).toBe(nuevoUsuario.password);
+    });
+
+    it('matches the email case-insensitively', () => {
+      service.registrarUsuario(nuevoUsuario);
+
+      const result = service.recuperarContrasena('ANA@TEST.COM');
+
+      expect(result).toBe(nuevoUsuario.password);
+    });
+
+    it('ignores surrounding whitespace in the email', () => {
+      service.registrarUsuario(nuevoUsuario);
+
+      const result = service.recuperarContrasena('  ana@test.com  ');
+
+      expect(result).toBe(nuevoUsuario.password);
+    });
+
+    it('returns null when no user matches the given email', () => {
+      const result = service.recuperarContrasena('noexiste@test.com');
+
+      expect(result).toBeNull();
+    });
+
+    it('returns null when there are no users stored', () => {
+      const result = service.recuperarContrasena(nuevoUsuario.email);
+
+      expect(result).toBeNull();
+    });
+  });
+
   describe('actualizarUsuario', () => {
     it('updates the given fields and persists them in localStorage', () => {
       const creado = service.registrarUsuario(nuevoUsuario);
