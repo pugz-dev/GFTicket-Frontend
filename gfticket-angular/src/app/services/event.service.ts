@@ -31,28 +31,4 @@ export class EventService {
         }))
       ));
   }
-
-  getEventosByName(name: string): Observable<EventModel[]> {
-    const busqueda = name.trim().toLowerCase();
-
-    return this.getEventos().pipe(
-      map((eventos) =>
-        busqueda === ''
-          ? eventos
-          : eventos.filter((evento) => evento.nombre.toLowerCase().includes(busqueda))
-      )
-    );
-  }
-
-  getEventosByLocality(locality: string): Observable<EventModel[]> {
-    const busqueda = locality.trim().toLowerCase();
-
-    return this.getEventos().pipe(
-      map((eventos) =>
-        busqueda === ''
-          ? eventos
-          : eventos.filter((evento) => evento.localidad.toLowerCase().match(busqueda))
-      )
-    );
-  }
 }

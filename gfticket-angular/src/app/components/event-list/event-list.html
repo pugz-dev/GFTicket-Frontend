@@ -52,13 +52,23 @@
       <h1 class="hero__title">Próximos conciertos<br />y eventos en vivo</h1>
       <div class="event-list__search-wrapper">
         <input
-          class="event-list__search"
+          class="event-list__search-name"
           type="text"
           placeholder="Buscar por nombre..."
-          (input)="onSearchChange($event)"
+          [(ngModel)]="searchTerm" 
+          (ngModelChange)="onSearchChange($event)"
         />
+        <select class="event-list__search-locality" name="locality"
+          [(ngModel)]="selectedLocality"
+          (ngModelChange)="onLocalityChange($event)">
+          <option value="" selected disabled hidden>Buscar por Localidad</option>
+          @for(locality of localities; track locality){
+            <option value="{{locality}}">{{locality}}</option>
+          }
+        </select>
+        <button (click) ="clearFilters()">Clear Filters</button>
       </div>
     </div>
-    <app-event-catalog [events]="events" />
+    <app-event-catalog [events]="filteredEvents" />
   </div>
 }
