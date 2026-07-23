@@ -2,12 +2,17 @@
   @if (authService.usuarioActual(); as usuario) {
     <div class="topbar__user">
       <button class="topbar__user-btn" type="button" (click)="toggleMenu()">
-        <span class="topbar__avatar">{{ usuario.nombre.charAt(0) }}</span>
+        @if (usuario.foto) {
+          <img class="topbar__avatar topbar__avatar--photo" [src]="usuario.foto" alt="" />
+        } @else {
+          <span class="topbar__avatar">{{ usuario.nombre.charAt(0) }}</span>
+        }
         {{ usuario.nombre }}
         <span class="topbar__chevron">▾</span>
       </button>
       @if (menuOpen) {
         <div class="topbar__menu">
+          <a class="topbar__menu-item" routerLink="/perfil" (click)="menuOpen = false">Mi perfil</a>
           <button class="topbar__menu-item" type="button" (click)="onLogout()">Cerrar sesión</button>
         </div>
       }

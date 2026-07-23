@@ -8,6 +8,7 @@ export interface UserModel {
     password: string;
     telefono: string;
     entradas?: TicketModel[];
+    foto?: string;
 }
 
 export interface Credenciales {

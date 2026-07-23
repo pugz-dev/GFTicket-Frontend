@@ -110,8 +110,22 @@
   }
 }
 
+.perfil__avatar--photo {
+  object-fit: cover;
+}
+
 .perfil__header-info {
   min-width: 0;
+}
+
+.perfil__foto-label {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-accent);
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .perfil__title {

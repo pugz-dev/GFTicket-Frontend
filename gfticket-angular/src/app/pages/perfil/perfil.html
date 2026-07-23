@@ -7,10 +7,21 @@
 
     @if (authService.usuarioActual(); as usuario) {
       <div class="perfil__header">
-        <span class="perfil__avatar">{{ usuario.nombre.charAt(0) }}</span>
+        @if (fotoPreview) {
+          <img class="perfil__avatar perfil__avatar--photo" [src]="fotoPreview" alt="" />
+        } @else {
+          <span class="perfil__avatar">{{ usuario.nombre.charAt(0) }}</span>
+        }
         <div class="perfil__header-info">
           <h1 class="perfil__title">{{ usuario.nombre }} {{ usuario.apellidos }}</h1>
           <p class="perfil__subtitle">{{ usuario.email }}</p>
+          <label class="perfil__foto-label" for="foto">
+            Cambiar foto
+            <input id="foto" type="file" accept="image/*" (change)="onFotoSeleccionada($event)" hidden />
+          </label>
+          @if (fotoError) {
+            <p class="field__error">La imagen no puede superar los 2 MB.</p>
+          }
         </div>
       </div>
     }

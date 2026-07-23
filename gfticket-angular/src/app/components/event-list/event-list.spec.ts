@@ -251,6 +251,22 @@ describe('EventList', () => {
       expect(compiled.querySelector('.topbar__menu')).toBeTruthy();
     });
 
+    it('shows a link to the profile page above the logout option', () => {
+      loginTestUser();
+
+      eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
+      createComponent();
+      fixture.detectChanges();
+
+      const compiled = fixture.nativeElement as HTMLElement;
+      (compiled.querySelector('.topbar__user-btn') as HTMLElement).click();
+      fixture.detectChanges();
+
+      const perfilLink = compiled.querySelector('a.topbar__menu-item[href="/perfil"]');
+      expect(perfilLink).toBeTruthy();
+      expect(perfilLink?.textContent).toContain('Mi perfil');
+    });
+
     it('logs the user out and shows the login link again', () => {
       const authService = TestBed.inject(AuthService);
       loginTestUser();
@@ -262,7 +278,7 @@ describe('EventList', () => {
       const compiled = fixture.nativeElement as HTMLElement;
       (compiled.querySelector('.topbar__user-btn') as HTMLElement).click();
       fixture.detectChanges();
-      (compiled.querySelector('.topbar__menu-item') as HTMLElement).click();
+      (compiled.querySelector('button.topbar__menu-item') as HTMLElement).click();
       fixture.detectChanges();
 
       expect(component.menuOpen).toBe(false);
