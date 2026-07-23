@@ -1,14 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 
 import { EventCatalog } from './event-catalog';
 import { EventModel } from '../../models/event.model';
+import { AuthService } from '../../services/auth.service';
 
 const MONTH_ABBRS = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
 
 describe('EventCatalog', () => {
   let component: EventCatalog;
   let fixture: ComponentFixture<EventCatalog>;
+  let authServiceSpy: jest.Mocked<AuthService>;
+  let router: Router;
 
   const mockEvents: EventModel[] = [
     {
@@ -40,13 +43,22 @@ describe('EventCatalog', () => {
   ];
 
   beforeEach(async () => {
+    authServiceSpy = {
+      estaAutenticado: jest.fn().mockReturnValue(false),
+    } as unknown as jest.Mocked<AuthService>;
+
     await TestBed.configureTestingModule({
       imports: [EventCatalog],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: authServiceSpy },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EventCatalog);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    jest.spyOn(router, 'navigate').mockResolvedValue(true);
     await fixture.whenStable();
   });
 
@@ -100,5 +112,40 @@ describe('EventCatalog', () => {
     for (const [i, event] of mockEvents.entries()) {
       expect(links[i].getAttribute('href')).toBe(`/eventos/${event.id}`);
     }
+  });
+
+  describe('buy button', () => {
+    it('is shown on every card when the user is authenticated', () => {
+      authServiceSpy.estaAutenticado.mockReturnValue(true);
+      fixture.componentRef.setInput('events', mockEvents);
+      fixture.detectChanges();
+      const compiled = fixture.nativeElement as HTMLElement;
+
+      const buttons = compiled.querySelectorAll('.event-card__buy-button');
+      expect(buttons.length).toBe(mockEvents.length);
+    });
+
+    it('is hidden when the user is not authenticated', () => {
+      authServiceSpy.estaAutenticado.mockReturnValue(false);
+      fixture.componentRef.setInput('events', mockEvents);
+      fixture.detectChanges();
+      const compiled = fixture.nativeElement as HTMLElement;
+
+      const buttons = compiled.querySelectorAll('.event-card__buy-button');
+      expect(buttons.length).toBe(0);
+    });
+
+    it('navigates to the cart for that event, without triggering the card link to the event detail', () => {
+      authServiceSpy.estaAutenticado.mockReturnValue(true);
+      fixture.componentRef.setInput('events', mockEvents);
+      fixture.detectChanges();
+      const compiled = fixture.nativeElement as HTMLElement;
+
+      const button = compiled.querySelector('.event-card__buy-button') as HTMLElement;
+      button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+      expect(router.navigate).toHaveBeenCalledTimes(1);
+      expect(router.navigate).toHaveBeenCalledWith(['/carrito', mockEvents[0].id]);
+    });
   });
 });
