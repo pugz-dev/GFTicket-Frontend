@@ -30,6 +30,12 @@ export const routes: Routes = [
     },
 
     {
+        path: 'perfil',
+        loadComponent: () => import('./pages/perfil/perfil').then(m => m.Perfil),
+        canActivate: [authGuard]
+    },
+
+    {
         path: 'carrito/:id',
         loadComponent: () => import('./pages/cart/cart').then(m => m.Cart),
         canActivate: [authGuard]
