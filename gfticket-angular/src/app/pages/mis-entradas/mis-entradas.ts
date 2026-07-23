@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 import { TicketModel } from '../../models/ticket.model';
 
 @Component({
   selector: 'app-mis-entradas',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './mis-entradas.html',
   styleUrl: './mis-entradas.css',
 })

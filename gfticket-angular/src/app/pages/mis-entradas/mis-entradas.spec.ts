@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { MisEntradas } from './mis-entradas';
 import { AuthService } from '../../services/auth.service';
@@ -32,7 +33,7 @@ describe('MisEntradas', () => {
 
     await TestBed.configureTestingModule({
       imports: [MisEntradas],
-      providers: [{ provide: AuthService, useValue: authServiceSpy }],
+      providers: [{ provide: AuthService, useValue: authServiceSpy }, provideRouter([])],
     }).compileComponents();
   });
 
