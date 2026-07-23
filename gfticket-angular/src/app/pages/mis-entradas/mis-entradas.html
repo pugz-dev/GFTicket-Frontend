@@ -1,1 +1,15 @@
-<p>mis-entradas works!</p>
+@if (entradas.length > 0) {
+<div class="page">
+  @for (entrada of entradas; track entrada.eventId) {
+  <div class="entrada">
+    <h2 class="entrada__titulo">{{ entrada.nombreEvento }}</h2>
+    <span class="entrada__fecha">{{ entrada.fecha }}</span>
+    <span class="entrada__precio">{{ entrada.precioPagado }} €</span>
+  </div>
+  }
+</div>
+} @else {
+<div class="page state state--empty">
+  <p class="state__message">No tienes entradas compradas todavía.</p>
+</div>
+}
