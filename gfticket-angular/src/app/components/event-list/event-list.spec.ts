@@ -1,3 +1,4 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
@@ -7,6 +8,9 @@ import { EventService } from '../../services/event.service';
 import { UserStorageService } from '../../services/user-storage.service';
 import { EventList } from './event-list';
 import { provideRouter } from '@angular/router';
+
+@Component({ template: '', standalone: true })
+class StubComponent {}
 
 describe('EventList', () => {
   let component: EventList;
@@ -53,7 +57,7 @@ describe('EventList', () => {
     await TestBed.configureTestingModule({
       imports: [EventList],
       providers: [{ provide: EventService, useValue: eventServiceSpy },
-      provideRouter([]),
+      provideRouter([{ path: 'mis-entradas', component: StubComponent }]),
       ],
     }).compileComponents();
   });
@@ -96,7 +100,7 @@ describe('EventList', () => {
     eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
     createComponent();
     fixture.detectChanges();
-    expect(component.events).toEqual(mockEvents);
+    expect(component.filteredEvents).toEqual(mockEvents);
     expect(component.loading).toBe(false);
     expect(component.error).toBe(false);
   });
@@ -118,7 +122,7 @@ describe('EventList', () => {
     fixture.detectChanges();
     expect(component.error).toBe(true);
     expect(component.loading).toBe(false);
-    expect(component.events).toEqual([]);
+    expect(component.filteredEvents).toEqual([]);
   });
 
   it('shows an error message in the DOM when error is true', () => {
@@ -131,45 +135,53 @@ describe('EventList', () => {
     expect(compiled.textContent?.toLowerCase()).toContain('error');
   });
 
-  it('calls getEventosByName with the typed text when the user types in the search input', () => {
-    eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
-    eventServiceSpy.getEventosByName.mockReturnValue(of(mockEvents));
+  it('shows a retry button when the request fails', () => {
+    eventServiceSpy.getEventos.mockReturnValue(
+      throwError(() => ({ status: 500 })),
+    );
+    createComponent();
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.state__retry')).toBeTruthy();
+  });
+
+  it('retries loading the events when the retry button is clicked', () => {
+    eventServiceSpy.getEventos
+      .mockReturnValueOnce(throwError(() => ({ status: 500 })))
+      .mockReturnValueOnce(of(mockEvents));
     createComponent();
     fixture.detectChanges();
 
-    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search');
-    input.value = 'Concert';
-    input.dispatchEvent(new Event('input'));
+    const compiled = fixture.nativeElement as HTMLElement;
+    (compiled.querySelector('.state__retry') as HTMLElement).click();
     fixture.detectChanges();
 
-    expect(eventServiceSpy.getEventosByName).toHaveBeenCalledWith('Concert');
+    expect(eventServiceSpy.getEventos).toHaveBeenCalledTimes(2);
+    expect(component.error).toBe(false);
+    expect(component.allEvents).toEqual(mockEvents);
   });
 
   it('updates the displayed events with the search results', () => {
     const filtered = [mockEvents[0]];
     eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
-    eventServiceSpy.getEventosByName.mockReturnValue(of(filtered));
     createComponent();
     fixture.detectChanges();
 
-    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search');
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search-name');
     input.value = 'Concert';
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
-    expect(component.events).toEqual(filtered);
+    expect(component.filteredEvents).toEqual(filtered);
   });
 
   it('shows all events again when the search input is cleared', () => {
     const filtered = [mockEvents[0]];
     eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
-    eventServiceSpy.getEventosByName
-      .mockReturnValueOnce(of(filtered))
-      .mockReturnValueOnce(of(mockEvents));
     createComponent();
     fixture.detectChanges();
 
-    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search');
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search-name');
     input.value = 'Concert';
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();
@@ -178,24 +190,7 @@ describe('EventList', () => {
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
-    expect(component.events).toEqual(mockEvents);
-  });
-
-  it('sets the error state when the search request fails', () => {
-    eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
-    eventServiceSpy.getEventosByName.mockReturnValue(
-      throwError(() => ({ status: 500 })),
-    );
-    createComponent();
-    fixture.detectChanges();
-
-    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search');
-    input.value = 'Concert';
-    input.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
-
-    expect(component.error).toBe(true);
-    expect(component.events).toEqual([]);
+    expect(component.filteredEvents).toEqual(mockEvents);
   });
 
   describe('user menu', () => {
@@ -278,7 +273,7 @@ describe('EventList', () => {
       const compiled = fixture.nativeElement as HTMLElement;
       (compiled.querySelector('.topbar__user-btn') as HTMLElement).click();
       fixture.detectChanges();
-      (compiled.querySelector('button.topbar__menu-item') as HTMLElement).click();
+      (compiled.querySelector('.topbar__logout') as HTMLElement).click();
       fixture.detectChanges();
 
       expect(component.menuOpen).toBe(false);

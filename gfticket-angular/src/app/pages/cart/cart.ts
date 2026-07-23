@@ -85,6 +85,7 @@ export class Cart implements OnInit {
           eventId: purchase.eventId,
           nombreEvento: this.event!.nombre,
           fecha: new Date().toISOString(),
+          fechaEvento: this.event!.fechaEvento,
           precioPagado: cantidad
         }
 

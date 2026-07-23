@@ -1,0 +1,25 @@
+@if (entradas.length > 0) {
+<div class="page">
+  <a class="back-link" routerLink="/">← Volver al catálogo</a>
+  <h1 class="page__title">Mis entradas</h1>
+  <div class="entradas-grid">
+    @for (entrada of entradas; track entrada.eventId) {
+    <div class="entrada">
+      <div class="entrada__info">
+        <h2 class="entrada__titulo">{{ entrada.nombreEvento }}</h2>
+        <span class="entrada__fecha-evento">Evento: {{ entrada.fechaEvento | date:'dd MMM yyyy' }}</span>
+        <span class="entrada__fecha-compra">Comprado el {{ entrada.fecha | date:'dd MMM yyyy' }}</span>
+      </div>
+      <span class="entrada__precio">{{ entrada.precioPagado | number:'1.0-2' }} €</span>
+    </div>
+    }
+  </div>
+</div>
+} @else {
+<div class="page state state--empty">
+  <div class="state__icon">🎫</div>
+  <h2 class="state__title">Mis entradas</h2>
+  <p class="state__message">No tienes entradas compradas todavía.</p>
+  <a class="state__cta" routerLink="/">Ver catálogo de eventos</a>
+</div>
+}
