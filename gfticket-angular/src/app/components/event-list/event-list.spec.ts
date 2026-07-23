@@ -96,7 +96,7 @@ describe('EventList', () => {
     eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));
     createComponent();
     fixture.detectChanges();
-    expect(component.events).toEqual(mockEvents);
+    expect(component.allEvents).toEqual(mockEvents);
     expect(component.loading).toBe(false);
     expect(component.error).toBe(false);
   });
@@ -118,7 +118,7 @@ describe('EventList', () => {
     fixture.detectChanges();
     expect(component.error).toBe(true);
     expect(component.loading).toBe(false);
-    expect(component.events).toEqual([]);
+    expect(component.allEvents).toEqual([]);
   });
 
   it('shows an error message in the DOM when error is true', () => {
@@ -157,7 +157,7 @@ describe('EventList', () => {
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
-    expect(component.events).toEqual(filtered);
+    expect(component.allEvents).toEqual(filtered);
   });
 
   it('shows all events again when the search input is cleared', () => {
@@ -178,7 +178,7 @@ describe('EventList', () => {
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
-    expect(component.events).toEqual(mockEvents);
+    expect(component.allEvents).toEqual(mockEvents);
   });
 
   it('sets the error state when the search request fails', () => {
@@ -195,7 +195,7 @@ describe('EventList', () => {
     fixture.detectChanges();
 
     expect(component.error).toBe(true);
-    expect(component.events).toEqual([]);
+    expect(component.allEvents).toEqual([]);
   });
 
   describe('user menu', () => {
