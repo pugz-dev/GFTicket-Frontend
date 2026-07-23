@@ -42,7 +42,7 @@ function emailUnicoValidator(
 })
 export class Perfil implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
+  readonly authService = inject(AuthService);
   private readonly userStorageService = inject(UserStorageService);
 
   submitted = false;

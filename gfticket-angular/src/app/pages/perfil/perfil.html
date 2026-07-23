@@ -5,69 +5,79 @@
       Volver
     </a>
 
-    <h1 class="perfil__title">Mi perfil</h1>
+    @if (authService.usuarioActual(); as usuario) {
+      <div class="perfil__header">
+        <span class="perfil__avatar">{{ usuario.nombre.charAt(0) }}</span>
+        <div class="perfil__header-info">
+          <h1 class="perfil__title">{{ usuario.nombre }} {{ usuario.apellidos }}</h1>
+          <p class="perfil__subtitle">{{ usuario.email }}</p>
+        </div>
+      </div>
+    }
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-      <div class="field">
-        <label for="nombre">Nombre</label>
-        <input id="nombre" type="text" formControlName="nombre" />
-        @if (form.controls.nombre.invalid && (form.controls.nombre.touched || submitted)) {
-          <p class="field__error">
-            @if (form.controls.nombre.hasError('required')) {
-              El nombre es obligatorio.
-            } @else if (form.controls.nombre.hasError('minlength')) {
-              El nombre debe tener al menos 2 caracteres.
-            } @else if (form.controls.nombre.hasError('soloEspacios')) {
-              El nombre no puede estar vacío.
-            }
-          </p>
-        }
-      </div>
+      <div class="perfil__grid">
+        <div class="field">
+          <label for="nombre">Nombre</label>
+          <input id="nombre" type="text" formControlName="nombre" />
+          @if (form.controls.nombre.invalid && (form.controls.nombre.touched || submitted)) {
+            <p class="field__error">
+              @if (form.controls.nombre.hasError('required')) {
+                El nombre es obligatorio.
+              } @else if (form.controls.nombre.hasError('minlength')) {
+                El nombre debe tener al menos 2 caracteres.
+              } @else if (form.controls.nombre.hasError('soloEspacios')) {
+                El nombre no puede estar vacío.
+              }
+            </p>
+          }
+        </div>
 
-      <div class="field">
-        <label for="apellidos">Apellidos</label>
-        <input id="apellidos" type="text" formControlName="apellidos" />
-        @if (form.controls.apellidos.invalid && (form.controls.apellidos.touched || submitted)) {
-          <p class="field__error">
-            @if (form.controls.apellidos.hasError('required')) {
-              Los apellidos son obligatorios.
-            } @else if (form.controls.apellidos.hasError('minlength')) {
-              Los apellidos deben tener al menos 2 caracteres.
-            } @else if (form.controls.apellidos.hasError('soloEspacios')) {
-              Los apellidos no pueden estar vacíos.
-            }
-          </p>
-        }
-      </div>
+        <div class="field">
+          <label for="apellidos">Apellidos</label>
+          <input id="apellidos" type="text" formControlName="apellidos" />
+          @if (form.controls.apellidos.invalid && (form.controls.apellidos.touched || submitted)) {
+            <p class="field__error">
+              @if (form.controls.apellidos.hasError('required')) {
+                Los apellidos son obligatorios.
+              } @else if (form.controls.apellidos.hasError('minlength')) {
+                Los apellidos deben tener al menos 2 caracteres.
+              } @else if (form.controls.apellidos.hasError('soloEspacios')) {
+                Los apellidos no pueden estar vacíos.
+              }
+            </p>
+          }
+        </div>
 
-      <div class="field">
-        <label for="email">Email</label>
-        <input id="email" type="email" formControlName="email" />
-        @if (form.controls.email.invalid && (form.controls.email.touched || submitted)) {
-          <p class="field__error">
-            @if (form.controls.email.hasError('required')) {
-              El email es obligatorio.
-            } @else if (form.controls.email.hasError('email')) {
-              Introduce un email válido.
-            } @else if (form.controls.email.hasError('emailDuplicado')) {
-              Ya existe una cuenta con este email.
-            }
-          </p>
-        }
-      </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" formControlName="email" />
+          @if (form.controls.email.invalid && (form.controls.email.touched || submitted)) {
+            <p class="field__error">
+              @if (form.controls.email.hasError('required')) {
+                El email es obligatorio.
+              } @else if (form.controls.email.hasError('email')) {
+                Introduce un email válido.
+              } @else if (form.controls.email.hasError('emailDuplicado')) {
+                Ya existe una cuenta con este email.
+              }
+            </p>
+          }
+        </div>
 
-      <div class="field">
-        <label for="telefono">Teléfono</label>
-        <input id="telefono" type="tel" formControlName="telefono" />
-        @if (form.controls.telefono.invalid && (form.controls.telefono.touched || submitted)) {
-          <p class="field__error">
-            @if (form.controls.telefono.hasError('required')) {
-              El teléfono es obligatorio.
-            } @else if (form.controls.telefono.hasError('pattern')) {
-              El teléfono debe tener 9 dígitos.
-            }
-          </p>
-        }
+        <div class="field">
+          <label for="telefono">Teléfono</label>
+          <input id="telefono" type="tel" formControlName="telefono" />
+          @if (form.controls.telefono.invalid && (form.controls.telefono.touched || submitted)) {
+            <p class="field__error">
+              @if (form.controls.telefono.hasError('required')) {
+                El teléfono es obligatorio.
+              } @else if (form.controls.telefono.hasError('pattern')) {
+                El teléfono debe tener 9 dígitos.
+              }
+            </p>
+          }
+        </div>
       </div>
 
       @if (guardadoOk) {
