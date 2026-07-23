@@ -28,6 +28,18 @@ describe('UserStorageService', () => {
     service = TestBed.inject(UserStorageService);
   });
 
+  describe('getUsuarios', () => {
+    it('returns an empty array when localStorage has never been initialized', () => {
+      expect(service.getUsuarios()).toEqual([]);
+    });
+
+    it('returns the users parsed from localStorage', () => {
+      localStorage.setItem('usuarios', JSON.stringify([{ ...nuevoUsuario, id: 1 }]));
+
+      expect(service.getUsuarios()).toEqual([{ ...nuevoUsuario, id: 1 }]);
+    });
+  });
+
   it('stores the new user under the "usuarios" key in localStorage', () => {
     service.registrarUsuario(nuevoUsuario);
 
@@ -166,6 +178,15 @@ describe('UserStorageService', () => {
 
       const stored: UserModel[] = JSON.parse(localStorage.getItem('usuarios') ?? '[]');
       expect(stored.find((u) => u.email === 'otro@test.com')?.entradas).toBeUndefined();
+    });
+
+    it('does not modify the stored users when the email does not match any user', () => {
+      service.registrarUsuario(nuevoUsuario);
+
+      service.asociarEntrada('noexiste@test.com', entrada);
+
+      const stored: UserModel[] = JSON.parse(localStorage.getItem('usuarios') ?? '[]');
+      expect(stored).toEqual([{ ...nuevoUsuario, id: 1 }]);
     });
   });
 });
