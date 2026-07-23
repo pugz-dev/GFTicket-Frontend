@@ -1,0 +1,74 @@
+<div class="perfil">
+  <div class="perfil__card">
+    <a class="back-link" routerLink="/">
+      <span class="back-link__icon">←</span>
+      Volver
+    </a>
+
+    <h1 class="perfil__title">Mi perfil</h1>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <div class="field">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" type="text" formControlName="nombre" />
+        @if (form.controls.nombre.invalid && (form.controls.nombre.touched || submitted)) {
+          <p class="field__error">
+            @if (form.controls.nombre.hasError('required')) {
+              El nombre es obligatorio.
+            } @else if (form.controls.nombre.hasError('minlength')) {
+              El nombre debe tener al menos 2 caracteres.
+            }
+          </p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="apellidos">Apellidos</label>
+        <input id="apellidos" type="text" formControlName="apellidos" />
+        @if (form.controls.apellidos.invalid && (form.controls.apellidos.touched || submitted)) {
+          <p class="field__error">
+            @if (form.controls.apellidos.hasError('required')) {
+              Los apellidos son obligatorios.
+            } @else if (form.controls.apellidos.hasError('minlength')) {
+              Los apellidos deben tener al menos 2 caracteres.
+            }
+          </p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" />
+        @if (form.controls.email.invalid && (form.controls.email.touched || submitted)) {
+          <p class="field__error">
+            @if (form.controls.email.hasError('required')) {
+              El email es obligatorio.
+            } @else if (form.controls.email.hasError('email')) {
+              Introduce un email válido.
+            }
+          </p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="telefono">Teléfono</label>
+        <input id="telefono" type="tel" formControlName="telefono" />
+        @if (form.controls.telefono.invalid && (form.controls.telefono.touched || submitted)) {
+          <p class="field__error">
+            @if (form.controls.telefono.hasError('required')) {
+              El teléfono es obligatorio.
+            } @else if (form.controls.telefono.hasError('pattern')) {
+              El teléfono debe tener 9 dígitos.
+            }
+          </p>
+        }
+      </div>
+
+      @if (guardadoOk) {
+        <p class="perfil__success">Los cambios se han guardado correctamente.</p>
+      }
+
+      <button type="submit" class="perfil__submit">Guardar cambios</button>
+    </form>
+  </div>
+</div>

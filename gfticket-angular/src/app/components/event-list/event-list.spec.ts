@@ -131,6 +131,32 @@ describe('EventList', () => {
     expect(compiled.textContent?.toLowerCase()).toContain('error');
   });
 
+  it('shows a retry button when the request fails', () => {
+    eventServiceSpy.getEventos.mockReturnValue(
+      throwError(() => ({ status: 500 })),
+    );
+    createComponent();
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.state__retry')).toBeTruthy();
+  });
+
+  it('retries loading the events when the retry button is clicked', () => {
+    eventServiceSpy.getEventos
+      .mockReturnValueOnce(throwError(() => ({ status: 500 })))
+      .mockReturnValueOnce(of(mockEvents));
+    createComponent();
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    (compiled.querySelector('.state__retry') as HTMLElement).click();
+    fixture.detectChanges();
+
+    expect(eventServiceSpy.getEventos).toHaveBeenCalledTimes(2);
+    expect(component.error).toBe(false);
+    expect(component.events).toEqual(mockEvents);
+  });
+
   it('updates the displayed events with the search results', () => {
     const filtered = [mockEvents[0]];
     eventServiceSpy.getEventos.mockReturnValue(of(mockEvents));

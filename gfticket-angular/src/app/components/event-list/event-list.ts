@@ -33,10 +33,16 @@ export class EventList implements OnInit {
   selectedLocality = '';
 
   ngOnInit(): void {
-    this.loadEventos();
+    this.cargarEventos();
   }
 
-  private loadEventos(){
+  reintentar(): void {
+    this.loading = true;
+    this.error = false;
+    this.cargarEventos();
+  }
+
+  private cargarEventos(): void {
     this.eventService.getEventos().subscribe({
       next: (events) => {
         this.allEvents = events;

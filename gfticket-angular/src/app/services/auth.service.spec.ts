@@ -103,6 +103,16 @@ describe('AuthService', () => {
     });
   });
 
+  describe('actualizarUsuarioActual', () => {
+    it('replaces the signal value with the given user', () => {
+      service.loginUsuario({ email: usuario.email, password: usuario.password });
+
+      service.actualizarUsuarioActual({ ...usuario, id: 1, nombre: 'Ana Maria' });
+
+      expect(service.usuarioActual()).toEqual({ ...usuario, id: 1, nombre: 'Ana Maria' });
+    });
+  });
+
   describe('logout', () => {
     it('clears the active session', () => {
       service.loginUsuario({ email: usuario.email, password: usuario.password });

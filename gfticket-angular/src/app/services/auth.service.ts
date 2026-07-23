@@ -28,6 +28,10 @@ export class AuthService {
     return usuario ?? null;
   }
 
+  actualizarUsuarioActual(usuario: UserModel): void {
+    this.usuarioActualSignal.set(usuario);
+  }
+
   logout(): void {
     localStorage.removeItem(SESSION_KEY);
     this.usuarioActualSignal.set(null);

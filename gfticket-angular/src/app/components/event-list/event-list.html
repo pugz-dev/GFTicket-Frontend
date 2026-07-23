@@ -40,7 +40,10 @@
   </div>
 } @else if (error) {
   <div class="page state state--error">
-    <p class="state__message">Hubo un error al cargar los eventos.</p>
+    <div class="state__icon">!</div>
+    <h2 class="state__title">No hemos podido cargar los eventos</h2>
+    <p class="state__message">Ha ocurrido un error al conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.</p>
+    <button class="state__retry" type="button" (click)="reintentar()">Reintentar</button>
   </div>
 } @else {
   <div class="page">
