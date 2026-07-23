@@ -70,6 +70,13 @@ export class UserStorageService {
     return usuario;
   }
 
+  recuperarContrasena(email: string): string | null {
+    const emailNormalizado = email.trim().toLowerCase();
+    const usuario = this.getUsuarios().find((u) => u.email.toLowerCase() === emailNormalizado);
+
+    return usuario?.password ?? null;
+  }
+
   getUsuarios(): UserModel[] {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
