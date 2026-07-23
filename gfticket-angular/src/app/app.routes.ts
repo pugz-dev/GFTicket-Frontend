@@ -44,6 +44,11 @@ export const routes: Routes = [
     {
         path: 'confirmacion',
         loadComponent: () => import('./pages/confirmation-purchase/confirmation-purchase').then(m => m.ConfirmationPurchase)
+    },
+
+    {
+        path: 'mis-entradas',
+        loadComponent: () => import('./pages/mis-entradas/mis-entradas').then(m => m.MisEntradas),
     }
 ];
 
