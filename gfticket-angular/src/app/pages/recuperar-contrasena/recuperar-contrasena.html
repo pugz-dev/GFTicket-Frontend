@@ -5,6 +5,7 @@
       Volver
     </a>
 
+    <span class="recuperar__icon">🔒</span>
     <h1 class="recuperar__title">Recuperar contraseña</h1>
     <p class="recuperar__subtitle">Introduce tu email y te mostraremos tu contraseña.</p>
 
@@ -24,11 +25,15 @@
       </div>
 
       @if (contrasenaEncontrada) {
-        <p class="recuperar__success">Tu contraseña es: <strong>{{ contrasenaEncontrada }}</strong></p>
+        <div class="recuperar__result recuperar__result--success">
+          Tu contraseña es: <strong>{{ contrasenaEncontrada }}</strong>
+        </div>
       }
 
       @if (noEncontrado) {
-        <p class="field__error">No existe ninguna cuenta con ese email.</p>
+        <div class="recuperar__result recuperar__result--error">
+          No existe ninguna cuenta con ese email.
+        </div>
       }
 
       <button type="submit" class="recuperar__submit">Recuperar contraseña</button>
