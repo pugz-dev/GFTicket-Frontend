@@ -45,6 +45,7 @@ export class UserStorageService {
     return nuevoUsuario;
   }
 
+
   asociarEntrada(email: string, entrada: TicketModel): void {
     const usuarios = this.getUsuarios();
     const usuarioEstaAsociado = usuarios.find(user => user.email === email)
@@ -53,6 +54,20 @@ export class UserStorageService {
     }
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(usuarios));
+  }
+
+  actualizarUsuario(id: number, datos: Partial<Omit<UserModel, 'id'>>): UserModel | null {
+    const usuarios = this.getUsuarios();
+    const usuario = usuarios.find((u) => u.id === id);
+
+    if (!usuario) {
+      return null;
+    }
+
+    Object.assign(usuario, datos);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(usuarios));
+
+    return usuario;
   }
 
   getUsuarios(): UserModel[] {

@@ -78,6 +78,18 @@ describe('EventService', () => {
     req.flush(mockEvent);
   });
 
+  it('converts negative prices to positive for a single event', () => {
+    const negativeEvent: EventModel = { ...mockEvent, precioMinimo: -20, precioMaximo: -80 };
+
+    service.getEventById('1').subscribe((event) => {
+      expect(event.precioMinimo).toBe(20);
+      expect(event.precioMaximo).toBe(80);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos/1`);
+    req.flush(negativeEvent);
+  });
+
   it('propagates an error when getEventById fails', () => {
     service.getEventById('1').subscribe({
       next: () => fail('should not succeed'),
@@ -116,6 +128,24 @@ describe('EventService', () => {
     const req = httpMock.expectOne(`${environment.apiUrl}/eventos`);
     expect(req.request.method).toBe('GET');
     req.flush(mockEvents);
+  });
+
+  it('converts negative prices to positive for every event in the list', () => {
+    const negativeEvents: EventModel[] = mockEvents.map((event) => ({
+      ...event,
+      precioMinimo: -event.precioMinimo,
+      precioMaximo: -event.precioMaximo,
+    }));
+
+    service.getEventos().subscribe((events) => {
+      events.forEach((event, i) => {
+        expect(event.precioMinimo).toBe(mockEvents[i].precioMinimo);
+        expect(event.precioMaximo).toBe(mockEvents[i].precioMaximo);
+      });
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos`);
+    req.flush(negativeEvents);
   });
 
   it('propagates an error when the request fails', () => {
@@ -203,6 +233,37 @@ describe('EventService', () => {
 
     const req = httpMock.expectOne(`${environment.apiUrl}/eventos`);
     req.flush('simulated error', { status: 500, statusText: 'Server Error' });
+  });
+
+
+  //getEventosByCiudad
+  it('returns all the events when the input locality is blank', () => {
+    service.getEventosByLocality('').subscribe((events) => {
+      expect(events).toEqual(mockEvents);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockEvents);
+  });
+
+  it('returns an empty array when no event matches the locality', () => {
+    service.getEventosByLocality('9999').subscribe((events) => {
+      expect(events).toEqual([]);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos`);
+    req.flush(mockEvents);
+  });
+
+  it('returns events whose name contains the search text (exact match)', () => {
+    service.getEventosByName('Rock').subscribe((events) => {
+      expect(events).toEqual([mockEvents[0]]);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/eventos`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockEvents);
   });
 
 });
