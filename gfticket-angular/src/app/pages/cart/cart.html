@@ -1,6 +1,28 @@
 @if (loading) {
 <div class="page">
-  <p class="status">Loading...</p>
+  <div class="checkout-loading">
+    <div class="checkout-loading__spinner"></div>
+    <h2 class="checkout-loading__title">Preparando tu compra</h2>
+    <p class="checkout-loading__subtitle">Estamos verificando la disponibilidad de entradas y cifrando la pasarela de pago. Un momento…</p>
+  </div>
+  <div class="cart__item skeleton-block">
+    <div class="skeleton cart__image"></div>
+    <div class="cart__body">
+      <div class="skeleton skeleton-line" style="width:160px;height:18px;"></div>
+      <div class="skeleton skeleton-line" style="width:90px;height:14px;"></div>
+    </div>
+  </div>
+  <div class="cart__form">
+    <div class="skeleton skeleton-field"></div>
+    <div class="skeleton skeleton-field"></div>
+    <div class="skeleton skeleton-field"></div>
+    <div class="cart__field-row">
+      <div class="skeleton skeleton-field"></div>
+      <div class="skeleton skeleton-field"></div>
+      <div class="skeleton skeleton-field"></div>
+    </div>
+    <div class="skeleton skeleton-button"></div>
+  </div>
 </div>
 } @else if (error) {
 <div class="page state state--error">
