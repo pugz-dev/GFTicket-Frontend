@@ -43,4 +43,16 @@ export class EventService {
       )
     );
   }
+
+  getEventosByLocality(locality: string): Observable<EventModel[]> {
+    const busqueda = locality.trim().toLowerCase();
+
+    return this.getEventos().pipe(
+      map((eventos) =>
+        busqueda === ''
+          ? eventos
+          : eventos.filter((evento) => evento.localidad.toLowerCase().match(busqueda))
+      )
+    );
+  }
 }
