@@ -137,7 +137,7 @@ describe('EventList', () => {
     createComponent();
     fixture.detectChanges();
 
-    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search');
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search-name');
     input.value = 'Concert';
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();
@@ -152,7 +152,7 @@ describe('EventList', () => {
     createComponent();
     fixture.detectChanges();
 
-    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search');
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search-name');
     input.value = 'Concert';
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();
@@ -169,7 +169,7 @@ describe('EventList', () => {
     createComponent();
     fixture.detectChanges();
 
-    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search');
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search-name');
     input.value = 'Concert';
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();
@@ -189,7 +189,7 @@ describe('EventList', () => {
     createComponent();
     fixture.detectChanges();
 
-    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search');
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.event-list__search-name');
     input.value = 'Concert';
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();

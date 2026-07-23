@@ -162,7 +162,7 @@
   pointer-events: none;
 }
 
-.event-list__search {
+.event-list__search-name {
   width: 100%;
   padding: 13px 20px 13px 44px;
   background: var(--color-surface);
@@ -174,11 +174,11 @@
   transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.event-list__search::placeholder {
+.event-list__search-name::placeholder {
   color: var(--color-text-muted);
 }
 
-.event-list__search:focus {
+.event-list__search-name:focus {
   outline: none;
   border-color: var(--color-accent);
   background: oklch(0.24 0.02 280);
