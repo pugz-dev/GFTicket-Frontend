@@ -29,7 +29,7 @@ export class EventList implements OnInit {
   localities : string[] = [];
   genres : string[] = [];
 
-  //filter values
+  //ilter values
   searchTerm = '';
   selectedLocality = '';
   selectedGenre = '';
@@ -130,7 +130,7 @@ export class EventList implements OnInit {
       const matchesLocality = locality === '' || event.localidad.toLowerCase() === locality.toLowerCase();
       //Multiple genres are saved as "genre_1/genre_2", split it to find at least one match
       const matchesGenre = genre === '' || event.genero.split('/').includes(genre);
-      return matchesName && matchesLocality && matchesGenre;   // add the 3rd filter here later
+      return matchesName && matchesLocality && matchesGenre;   
     });
 
     this.cdr.markForCheck();
