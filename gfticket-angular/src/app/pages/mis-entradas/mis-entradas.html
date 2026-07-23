@@ -1,11 +1,15 @@
 @if (entradas.length > 0) {
 <div class="page">
+  <a class="back-link" routerLink="/">← Volver al catálogo</a>
   <h1 class="page__title">Mis entradas</h1>
   <div class="entradas-grid">
     @for (entrada of entradas; track entrada.eventId) {
     <div class="entrada">
-      <h2 class="entrada__titulo">{{ entrada.nombreEvento }}</h2>
-      <span class="entrada__fecha">{{ entrada.fecha | date:'dd MM yyyy' }}</span>
+      <div class="entrada__info">
+        <h2 class="entrada__titulo">{{ entrada.nombreEvento }}</h2>
+        <span class="entrada__fecha-evento">Evento: {{ entrada.fechaEvento | date:'dd MM yyyy' }}</span>
+        <span class="entrada__fecha-compra">Comprado el {{ entrada.fecha | date:'dd MM yyyy' }}</span>
+      </div>
       <span class="entrada__precio">{{ entrada.precioPagado | number:'1.0-2' }} €</span>
     </div>
     }

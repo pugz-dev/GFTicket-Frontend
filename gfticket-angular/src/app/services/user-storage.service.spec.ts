@@ -19,6 +19,7 @@ describe('UserStorageService', () => {
     eventId: 1,
     nombreEvento: 'Concierto de prueba',
     fecha: '2026-07-22',
+    fechaEvento: '2026-08-15',
     precioPagado: 30,
   };
 

@@ -1,3 +1,4 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
@@ -7,6 +8,9 @@ import { EventService } from '../../services/event.service';
 import { UserStorageService } from '../../services/user-storage.service';
 import { EventList } from './event-list';
 import { provideRouter } from '@angular/router';
+
+@Component({ template: '', standalone: true })
+class StubComponent {}
 
 describe('EventList', () => {
   let component: EventList;
@@ -53,7 +57,7 @@ describe('EventList', () => {
     await TestBed.configureTestingModule({
       imports: [EventList],
       providers: [{ provide: EventService, useValue: eventServiceSpy },
-      provideRouter([]),
+      provideRouter([{ path: 'mis-entradas', component: StubComponent }]),
       ],
     }).compileComponents();
   });
@@ -288,7 +292,7 @@ describe('EventList', () => {
       const compiled = fixture.nativeElement as HTMLElement;
       (compiled.querySelector('.topbar__user-btn') as HTMLElement).click();
       fixture.detectChanges();
-      (compiled.querySelector('.topbar__menu-item') as HTMLElement).click();
+      (compiled.querySelector('.topbar__logout') as HTMLElement).click();
       fixture.detectChanges();
 
       expect(component.menuOpen).toBe(false);

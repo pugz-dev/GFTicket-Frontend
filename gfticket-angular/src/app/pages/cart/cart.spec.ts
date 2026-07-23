@@ -205,6 +205,7 @@ describe('Cart', () => {
       eventId: mockEvent.id,
       nombreEvento: mockEvent.nombre,
       fecha: expect.any(String),
+      fechaEvento: mockEvent.fechaEvento,
       precioPagado: cantidadArg,
     });
 
