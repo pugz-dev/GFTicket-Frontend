@@ -1,9 +1,13 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 
 import { EventCatalog } from './event-catalog';
 import { EventModel } from '../../models/event.model';
 import { AuthService } from '../../services/auth.service';
+
+@Component({ template: '', standalone: true })
+class StubComponent {}
 
 const MONTH_ABBRS = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
 
@@ -50,7 +54,10 @@ describe('EventCatalog', () => {
     await TestBed.configureTestingModule({
       imports: [EventCatalog],
       providers: [
-        provideRouter([]),
+        provideRouter([
+          { path: 'carrito/:id', component: StubComponent },
+          { path: 'eventos/:id', component: StubComponent },
+        ]),
         { provide: AuthService, useValue: authServiceSpy },
       ],
     }).compileComponents();
@@ -58,7 +65,6 @@ describe('EventCatalog', () => {
     fixture = TestBed.createComponent(EventCatalog);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
-    jest.spyOn(router, 'navigate').mockResolvedValue(true);
     await fixture.whenStable();
   });
 
@@ -135,17 +141,17 @@ describe('EventCatalog', () => {
       expect(buttons.length).toBe(0);
     });
 
-    it('navigates to the cart for that event, without triggering the card link to the event detail', () => {
+    it('navigates to the cart for that event, without triggering the card link to the event detail', async () => {
       authServiceSpy.estaAutenticado.mockReturnValue(true);
       fixture.componentRef.setInput('events', mockEvents);
       fixture.detectChanges();
       const compiled = fixture.nativeElement as HTMLElement;
 
       const button = compiled.querySelector('.event-card__buy-button') as HTMLElement;
-      button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      button.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+      await fixture.whenStable();
 
-      expect(router.navigate).toHaveBeenCalledTimes(1);
-      expect(router.navigate).toHaveBeenCalledWith(['/carrito', mockEvents[0].id]);
+      expect(router.url).toBe(`/carrito/${mockEvents[0].id}`);
     });
   });
 });
