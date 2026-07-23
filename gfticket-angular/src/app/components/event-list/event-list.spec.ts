@@ -154,7 +154,7 @@ describe('EventList', () => {
 
     expect(eventServiceSpy.getEventos).toHaveBeenCalledTimes(2);
     expect(component.error).toBe(false);
-    expect(component.events).toEqual(mockEvents);
+    expect(component.allEvents).toEqual(mockEvents);
   });
 
   it('updates the displayed events with the search results', () => {
